@@ -37,7 +37,7 @@ jobs:
         working-directory: humanoid-policy-viewer
 
       - name: Prepare Pages artifact
-        run: mkdir -p _site && cp index.html _site/index.html && cp -R static _site/static && if [ -f .nojekyll ]; then cp .nojekyll _site/.nojekyll; fi && if [ -f CNAME ]; then cp CNAME _site/CNAME; fi
+        run: mkdir -p _site && cp index.html _site/index.html && cp -R static _site/static && cp -R df-act-live-demo-assets _site/df-act-live-demo-assets && if [ -f .nojekyll ]; then cp .nojekyll _site/.nojekyll; fi && if [ -f CNAME ]; then cp CNAME _site/CNAME; fi
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
