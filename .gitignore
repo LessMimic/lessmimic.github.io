@@ -1,0 +1,5 @@
+# Build output (rebuilt by CI)
+static/humanoid-policy-viewer/
+
+# OS files
+.DS_Store
