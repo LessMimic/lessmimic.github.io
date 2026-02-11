@@ -1,0 +1,52 @@
+\begin{table}[ht!]
+    \centering
+    \caption{
+    \textbf{Long-horizon trajectory completion with increasing task length.}
+    We evaluate the ability to complete long sequences of heterogeneous tasks
+    without environment resets.
+    }
+    \label{tab:long_horizon}
+    \small
+    \setlength{\tabcolsep}{5pt}
+    \begin{tabular}{lccccc}
+    \toprule
+    \textbf{Ours}
+    & \textbf{5}
+    & \textbf{10}
+    & \textbf{15}
+    & \textbf{25}
+    & \textbf{40} \\
+     & \textbf{Tasks}
+     & \textbf{Tasks}
+     & \textbf{Tasks}
+     & \textbf{Tasks}
+     & \textbf{Tasks} \\
+    \midrule
+    % \rowcolor{gray!30}
+    % \multicolumn{6}{l}{\textbf{Ablation study}} \\
+    
+    - AIP & \std{5.2}{0.2} & \std{0.0}{0.0} & \std{0.0}{0.0} & \std{\underline{0.0}}{0.0} & \underline{0.0} \\
+    
+    - Syn. & \std{\underline{22.1}}{0.8} & \std{\underline{4.9}}{0.2} & \std{\underline{1.0}}{0.4} & \std{0.0}{0.0} & 0.0 \\
+    
+    - Rand. & \std{1.9}{0.1} & \std{0.0}{0.0} & \std{0.0}{0.0} & \std{0.0}{0.0} & 0.0 \\
+    
+    - RL & \std{3.3}{0.2} & \std{0.0}{0.0} & \std{0.0}{0.0} & \std{0.0}{0.0} & 0.0 \\
+    
+    - Trans. & \std{1.7}{0.1} & \std{0.0}{0.0} & \std{0.0}{0.0} & \std{0.0}{0.0} & 0.0 \\
+    
+    \midrule
+    Mocap & \std{\textbf{61.8}}{1.7} & \std{\textbf{38.1}}{1.5} & \std{\textbf{23.5}}{1.2} & \std{\textbf{8.9}}{0.6} & \textbf{2.1} \\
+    
+    Vision & \std{15.9}{0.6} & \std{2.5}{0.1} & \std{0.0}{0.0} & \std{0.0}{0.0} & 0.0 \\
+    
+    \bottomrule
+    \end{tabular}
+    \vspace{1mm}
+    
+    % \footnotesize{
+    % SR denotes overall success rate (\%).
+    % A trajectory is considered successful only if all constituent tasks are completed.
+    % Results are averaged over 3 random seeds.
+    % }
+    \end{table}

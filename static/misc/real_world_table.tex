@@ -1,0 +1,50 @@
+\begin{table*}[htbp!]
+    \centering
+    \caption{
+    \textbf{Real-world deployment on a humanoid robot.}
+    We evaluate both the mocap-based and vision-based variants on real-world PickUp and SitStand tasks with different object sizes and seat heights.
+    Results report task success rate ($R_{succ}$) and root trajectory tracking accuracy ($R_{acc}$), measured using external motion capture for evaluation only.
+    }
+    \label{tab:deploy}
+    \small
+    % \setlength{\tabcolsep}{4pt}
+    \resizebox{\textwidth}{!}{%
+    \begin{tabular}{lcc cc cc cc}
+    \toprule
+    \textbf{Method}
+    & \multicolumn{2}{c}{\textbf{PickUp $22cm^3$} ($\uparrow$,\%)}
+    & \multicolumn{2}{c}{\textbf{PickUp $60cm^3$} ($\uparrow$,\%)}
+    & \multicolumn{2}{c}{\textbf{SitStand $12cm$} ($\uparrow$,\%)}
+    & \multicolumn{2}{c}{\textbf{SitStand $46cm$} ($\uparrow$,\%)}
+    
+    \\
+    \cmidrule(lr){2-3}
+    \cmidrule(lr){4-5}
+    \cmidrule(lr){6-7}
+    \cmidrule(lr){8-9}
+    & \textbf{Real $R_{succ}$}
+    & \textbf{Root $R_{acc}$}
+    & \textbf{Real $R_{succ}$}
+    & \textbf{Root $R_{acc}$}
+    & \textbf{Real $R_{succ}$}
+    & \textbf{Root $R_{acc}$}
+    & \textbf{Real $R_{succ}$}
+    & \textbf{Root $R_{acc}$}
+    \\
+    \midrule
+    
+    Ours (Mocap) & 10 / 10 & 94.44 &  8 / 10 & 81.39 & 8 / 10 & 84.89 &  10 / 10 & 91.88 \\
+    
+    Ours (Vision) & 8 / 10 & 89.15 &  7 / 10 &  75.24 &  -- &  -- &  -- & -- \\
+    
+    \bottomrule
+    \end{tabular}
+    }
+    \vspace{1mm}
+    \footnotesize{
+    \textbf{Metrics.}
+    $R_{succ}$: Success rate (\%).
+    $R_{acc}$: Tracking accuracy of the root trajectory (\%).
+    \vspace{-12pt}
+    }
+    \end{table*}
