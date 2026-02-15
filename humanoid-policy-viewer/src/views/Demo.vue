@@ -30,15 +30,22 @@
       <v-card-text class="py-0 controls-body">
 
         <v-divider class="my-2"/>
-        <span class="status-name">Movement (keyboard)</span>
-        <div class="text-caption mt-1">
+        <div class="section-header" @click="sectionMovement = !sectionMovement">
+          <v-icon size="14" class="section-chevron">{{ sectionMovement ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
+          <span class="status-name">Movement (keyboard)</span>
+        </div>
+        <div v-if="sectionMovement" class="text-caption mt-1">
           <b>W/S</b> Forward/Back &nbsp; <b>A/D</b> Left/Right<br/>
           <b>Q/E</b> Turn left/right &nbsp; <b>Backspace</b> Reset
         </div>
 
         <v-divider class="my-2"/>
-        <span class="status-name">Task Condition</span>
-        <div class="task-buttons mt-2">
+        <div class="section-header" @click="sectionTask = !sectionTask">
+          <v-icon size="14" class="section-chevron">{{ sectionTask ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
+          <span class="status-name">Task Condition</span>
+          <span class="text-caption ml-1" style="opacity:0.7" v-if="!sectionTask">{{ taskConditionLabel }}</span>
+        </div>
+        <div v-if="sectionTask" class="task-buttons mt-2">
           <v-btn
             :color="taskConditionLabel === 'None' ? 'primary' : undefined"
             :variant="taskConditionLabel === 'None' ? 'flat' : 'tonal'"
@@ -60,8 +67,12 @@
         </div>
 
         <v-divider class="my-2"/>
-        <span class="status-name">Add Object</span>
-        <div class="obj-upload mt-1">
+        <div class="section-header" @click="sectionObject = !sectionObject">
+          <v-icon size="14" class="section-chevron">{{ sectionObject ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
+          <span class="status-name">Add Object</span>
+          <span class="text-caption ml-1" style="opacity:0.7" v-if="!sectionObject && userObjects.length">{{ userObjects.length }} obj</span>
+        </div>
+        <div v-if="sectionObject" class="obj-upload mt-1">
           <input
             ref="meshFileInput"
             type="file"
@@ -75,17 +86,10 @@
             :disabled="state !== 1 || objComputing"
             @click="$refs.meshFileInput.click()"
           >
-            {{ objComputing ? 'Computing SDF...' : 'Upload Mesh' }}
+            Upload Mesh
           </v-btn>
-          <v-progress-linear
-            v-if="objComputing"
-            :model-value="objProgress"
-            color="primary"
-            height="4"
-            class="mt-1"
-          ></v-progress-linear>
         </div>
-        <div v-if="userObjects.length > 0" class="user-objects-list mt-2">
+        <div v-if="sectionObject && userObjects.length > 0" class="user-objects-list mt-2">
           <div v-for="obj in userObjects" :key="obj.name" class="user-object-item">
             <div class="user-object-header">
               <v-btn
@@ -145,13 +149,21 @@
                 :disabled="obj.confirming || objComputing"
                 @click="confirmUserObj(obj.name)"
               >
-                Add to Simulation
+                {{ obj.confirming ? 'Computing SDF & Adding...' : 'Add to Simulation' }}
               </v-btn>
+              <v-progress-linear
+                v-if="obj.confirming && objProgress > 0"
+                :model-value="objProgress"
+                color="success"
+                height="4"
+                class="mt-1"
+              ></v-progress-linear>
             </div>
           </div>
         </div>
 
         <v-checkbox
+          v-if="sectionObject"
           v-model="sdfVisEnabled"
           label="Visualize SDF"
           density="compact"
@@ -162,7 +174,12 @@
         ></v-checkbox>
 
         <v-divider class="my-2"/>
-        <div class="status-legend follow-controls">
+        <div class="section-header" @click="sectionSettings = !sectionSettings">
+          <v-icon size="14" class="section-chevron">{{ sectionSettings ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
+          <span class="status-name">Settings</span>
+        </div>
+        <template v-if="sectionSettings">
+        <div class="status-legend follow-controls mt-1">
           <span class="status-name">Camera follow</span>
           <v-btn
             size="x-small"
@@ -189,6 +206,19 @@
           hide-details
           @update:modelValue="onRenderScaleChange"
         ></v-slider>
+        <div class="status-legend mt-1">
+          <span class="status-name">SDF resolution</span>
+          <span class="text-caption">{{ sdfResolution }}³</span>
+        </div>
+        <v-slider
+          v-model="sdfResolution"
+          min="16"
+          max="64"
+          step="8"
+          density="compact"
+          hide-details
+        ></v-slider>
+        </template>
       </v-card-text>
       <v-card-actions>
         <v-btn color="primary" block @click="reset">Reset</v-btn>
@@ -248,8 +278,14 @@ export default {
     objComputing: false,
     objProgress: 0,
     userObjects: [],   // [{ name, label, pos: [x,y,z], euler: [rx,ry,rz] (deg), scale, confirmed, expanded }]
+    // Collapsible panel sections
+    sectionMovement: false,
+    sectionTask: true,
+    sectionObject: true,
+    sectionSettings: false,
     cameraFollowEnabled: true,
     sdfVisEnabled: true,
+    sdfResolution: 32,
     renderScale: 2.0,
     simStepHz: 0,
     isSmallScreen: false,
@@ -369,33 +405,23 @@ export default {
       if (!file || !this.demo) return;
       event.target.value = ''; // allow re-upload of same file
 
-      this.objComputing = true;
-      this.objProgress = 0;
-
       const ext = file.name.split('.').pop().toLowerCase();
       const label = file.name.replace(/\.(obj|stl)$/i, '');
 
       try {
-        // Yield to UI before heavy computation
-        await new Promise(r => setTimeout(r, 50));
-
         let result;
-        const progressCb = (done, total) => {
-          this.objProgress = Math.round((done / total) * 100);
-        };
-
         if (ext === 'stl') {
           const buffer = await file.arrayBuffer();
           result = this.demo.addUserObjectFromStl(buffer, {
             name: undefined,
             position: [0.7, 0.7, 0.2],
-          }, progressCb);
+          });
         } else {
           const text = await file.text();
           result = this.demo.addUserObject(text, {
             name: undefined,
             position: [0.7, 0.7, 0.2],
-          }, progressCb);
+          });
         }
 
         this.userObjects.push({
@@ -413,9 +439,6 @@ export default {
       } catch (err) {
         console.error('Failed to load mesh:', err);
         alert('Failed to load mesh file: ' + err.message);
-      } finally {
-        this.objComputing = false;
-        this.objProgress = 0;
       }
     },
     onObjPosChange(name, axis, event) {
@@ -459,10 +482,15 @@ export default {
       if (!obj || obj.confirmed || obj.confirming) return;
 
       obj.confirming = true;
+      this.objComputing = true;
+      this.objProgress = 0;
       try {
         const eulerRad = obj.euler.map(d => d * Math.PI / 180);
+        const progressCb = (done, total) => {
+          this.objProgress = Math.round((done / total) * 100);
+        };
         const success = await this.demo?.confirmUserObject(
-          name, [...obj.pos], eulerRad, obj.scale, obj.mass, obj.friction
+          name, [...obj.pos], eulerRad, obj.scale, obj.mass, obj.friction, this.sdfResolution, progressCb
         );
         if (success) {
           obj.confirmed = true;
@@ -475,6 +503,8 @@ export default {
         alert('Error adding object to simulation: ' + err.message);
       } finally {
         obj.confirming = false;
+        this.objComputing = false;
+        this.objProgress = 0;
       }
     },
     async removeUserObj(name) {
@@ -756,6 +786,22 @@ export default {
 
 .sdf-vis-checkbox :deep(.v-label) {
   font-size: 0.8rem;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.section-header:hover {
+  opacity: 0.8;
+}
+
+.section-chevron {
+  flex-shrink: 0;
 }
 
 .status-legend {

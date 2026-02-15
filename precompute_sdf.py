@@ -183,13 +183,93 @@ def compute_sdf_grid(vertices, faces, grid_size=40, padding=1.0):
     }
 
 
+def unsigned_distance_to_box(points, center, half_extents):
+    """
+    Compute unsigned distance from each point to an axis-aligned box surface.
+    points: (N, 3), center: (3,), half_extents: (3,)
+    Returns: (N,) unsigned distances
+    """
+    q = np.abs(points - center) - half_extents
+    # Outside distance: Euclidean distance from clamped components
+    outside = np.sqrt(np.sum(np.maximum(q, 0.0) ** 2, axis=1))
+    # Inside distance: negative of max component (all q < 0 when inside)
+    inside = -np.max(q, axis=1)
+    # Unsigned: use outside when outside, inside penetration depth when inside
+    return np.where(outside > 0, outside, inside)
+
+
+def compute_box_primitives_sdf(boxes, grid_size=40, padding=1.0):
+    """
+    Compute unsigned distance field for a composite object made of axis-aligned boxes.
+    boxes: list of (center, half_extents) tuples, each (3,) arrays
+    Returns SDF JSON dict.
+    """
+    # Compute bounding box over all box corners
+    all_min = np.full(3, np.inf)
+    all_max = np.full(3, -np.inf)
+    for center, half_ext in boxes:
+        c, h = np.array(center), np.array(half_ext)
+        all_min = np.minimum(all_min, c - h)
+        all_max = np.maximum(all_max, c + h)
+
+    bbox_min = all_min - padding
+    bbox_max = all_max + padding
+
+    x = np.linspace(bbox_min[0], bbox_max[0], grid_size)
+    y = np.linspace(bbox_min[1], bbox_max[1], grid_size)
+    z = np.linspace(bbox_min[2], bbox_max[2], grid_size)
+
+    xx, yy, zz = np.meshgrid(x, y, z, indexing='ij')
+    points = np.stack([xx.ravel(), yy.ravel(), zz.ravel()], axis=1)
+
+    print(f"  Grid: {grid_size}^3 = {len(points)} points")
+    print(f"  Bbox: [{bbox_min[0]:.3f}, {bbox_min[1]:.3f}, {bbox_min[2]:.3f}] to "
+          f"[{bbox_max[0]:.3f}, {bbox_max[1]:.3f}, {bbox_max[2]:.3f}]")
+
+    # For each point, find minimum unsigned distance across all boxes
+    min_dist = np.full(len(points), np.inf)
+    for center, half_ext in boxes:
+        d = unsigned_distance_to_box(points, np.array(center), np.array(half_ext))
+        min_dist = np.minimum(min_dist, d)
+
+    # Clamp to padding
+    min_dist = np.clip(min_dist, 0.0, padding)
+
+    flat = min_dist.astype(np.float32)
+    b64_data = base64.b64encode(flat.tobytes()).decode('ascii')
+
+    return {
+        'grid_size': [grid_size, grid_size, grid_size],
+        'bbox_min': [round(v, 6) for v in bbox_min.tolist()],
+        'bbox_max': [round(v, 6) for v in bbox_max.tolist()],
+        'distances_b64': b64_data,
+    }
+
+
+# MuJoCo chair definition: list of (center, half_extents) from g1_interaction.xml
+CHAIR_BOXES = [
+    # Seat:  size="0.22 0.22 0.025"  pos="0.0 0.0 0.0"
+    ([0.0, 0.0, 0.0],       [0.22, 0.22, 0.025]),
+    # Back:  size="0.025 0.22 0.20"  pos="-0.195 0.0 0.225"
+    ([-0.195, 0.0, 0.225],  [0.025, 0.22, 0.20]),
+    # Front-left leg:  size="0.02 0.02 0.18"  pos="0.18 0.18 -0.205"
+    ([0.18, 0.18, -0.205],  [0.02, 0.02, 0.18]),
+    # Front-right leg: size="0.02 0.02 0.18"  pos="0.18 -0.18 -0.205"
+    ([0.18, -0.18, -0.205], [0.02, 0.02, 0.18]),
+    # Back-left leg:   size="0.02 0.02 0.18"  pos="-0.18 0.18 -0.205"
+    ([-0.18, 0.18, -0.205], [0.02, 0.02, 0.18]),
+    # Back-right leg:  size="0.02 0.02 0.18"  pos="-0.18 -0.18 -0.205"
+    ([-0.18, -0.18, -0.205],[0.02, 0.02, 0.18]),
+]
+
+
 def main():
     script_dir = os.path.dirname(os.path.abspath(__file__))
     assets_dir = os.path.join(script_dir, 'df-act-live-demo-assets')
 
+    # Box and crate: simple single-geom objects — OBJ meshes match MuJoCo exactly
     obj_files = {
         'box': 'box_0104.obj',
-        'chair': 'chair_0104.obj',
         'crate': 'crate_0104.obj',
     }
 
@@ -211,6 +291,18 @@ def main():
 
         size_kb = os.path.getsize(output_path) / 1024
         print(f"  Saved: {output_path} ({size_kb:.1f} KB)")
+
+    # Chair: composite of 6 box primitives — compute SDF from MuJoCo geom definitions
+    print(f"\nProcessing chair (from MuJoCo box primitives)")
+    print(f"  {len(CHAIR_BOXES)} box geoms")
+    sdf_data = compute_box_primitives_sdf(CHAIR_BOXES, grid_size=40, padding=1.0)
+
+    output_path = os.path.join(assets_dir, 'chair_sdf.json')
+    with open(output_path, 'w') as f:
+        json.dump(sdf_data, f)
+
+    size_kb = os.path.getsize(output_path) / 1024
+    print(f"  Saved: {output_path} ({size_kb:.1f} KB)")
 
     print("\nDone!")
 

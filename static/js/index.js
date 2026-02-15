@@ -147,6 +147,19 @@ function autoplayDemoVideos() {
 
 function setVideoSource(videoElement, sourceUrl) {
     if (!videoElement || !sourceUrl) return;
+
+    // Capture the current frame as a poster so the element keeps its
+    // visual content while the new source loads, preventing a flash.
+    try {
+        if (videoElement.readyState >= 2 && videoElement.videoWidth) {
+            var canvas = document.createElement('canvas');
+            canvas.width = videoElement.videoWidth;
+            canvas.height = videoElement.videoHeight;
+            canvas.getContext('2d').drawImage(videoElement, 0, 0);
+            videoElement.poster = canvas.toDataURL('image/jpeg', 0.7);
+        }
+    } catch (e) { /* cross-origin or canvas taint — ignore */ }
+
     var sourceEl = videoElement.querySelector('source');
     if (!sourceEl) {
         sourceEl = document.createElement('source');
@@ -155,6 +168,13 @@ function setVideoSource(videoElement, sourceUrl) {
     }
     sourceEl.src = sourceUrl;
     videoElement.load();
+
+    // Once the new video has a frame, clear the poster so it doesn't
+    // show stale content on subsequent pauses.
+    videoElement.addEventListener('loadeddata', function clearPoster() {
+        videoElement.removeEventListener('loadeddata', clearPoster);
+        videoElement.removeAttribute('poster');
+    });
 }
 
 function activateTab(container, activeButton) {
@@ -351,8 +371,18 @@ function setupMujocoSessionLauncher() {
 }
 
 function setupOutlinePanel() {
+    var panel = document.querySelector('.outline-panel');
     var outlineLinks = Array.from(document.querySelectorAll('.outline-panel .outline-link[data-outline-link]'));
     if (!outlineLinks.length) return;
+
+    // --- Fold / unfold toggle ---
+    var titleEl = document.getElementById('outline-toggle');
+    if (titleEl && panel) {
+        titleEl.addEventListener('click', function(e) {
+            e.preventDefault();
+            panel.classList.toggle('is-collapsed');
+        });
+    }
 
     var sectionEntries = outlineLinks
         .map(function(link) {

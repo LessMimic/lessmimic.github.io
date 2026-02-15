@@ -62,8 +62,8 @@
   <title>DF-ACT: Generalizable Long-Horizon Humanoid Interaction via Distance Fields</title>
   
   <!-- Favicon and App Icons -->
-  <link rel="icon" type="image/x-icon" href="static/images/favicon.ico">
-  <link rel="apple-touch-icon" href="static/images/favicon.ico">
+  <link rel="icon" type="image/png" href="static/images/df-act-icon.png">
+  <link rel="apple-touch-icon" href="static/images/df-act-icon.png">
   
   <!-- Critical CSS - Load synchronously -->
   <link rel="stylesheet" href="static/css/bulma.min.css">
@@ -181,19 +181,26 @@
   </div>
 
   <aside class="outline-panel" aria-label="Page outline">
-    <div class="outline-panel-title">Outline</div>
-    <a href="#top-section" class="outline-link active" data-outline-link="top-section">Top</a>
-    <a href="#contributions-section" class="outline-link" data-outline-link="contributions-section">Contributions</a>
-    <a href="#method-section" class="outline-link" data-outline-link="method-section">Method</a>
-    <a href="#live-demo-section" class="outline-link" data-outline-link="live-demo-section">Live MuJoCo</a>
-    <a href="#generalization-section" class="outline-link" data-outline-link="generalization-section">Objects</a>
-    <a href="#recovery-section" class="outline-link" data-outline-link="recovery-section">Recovery</a>
-    <a href="#longhorizon-section" class="outline-link" data-outline-link="longhorizon-section">Long-horizon</a>
-    <a href="#perception-section" class="outline-link" data-outline-link="perception-section">Perception</a>
-    <a href="#results-section" class="outline-link" data-outline-link="results-section">Results</a>
-    <a href="#abstract-section" class="outline-link" data-outline-link="abstract-section">Abstract</a>
-    <a href="#paper-section" class="outline-link" data-outline-link="paper-section">Paper PDF</a>
-    <a href="#BibTeX" class="outline-link" data-outline-link="BibTeX">BibTeX</a>
+    <div class="outline-panel-title" id="outline-toggle">
+      <span>Outline</span>
+      <button class="outline-fold-btn" aria-label="Toggle outline" title="Toggle outline">
+        <svg class="outline-fold-icon" viewBox="0 0 16 16" width="12" height="12"><path d="M4 6l4 4 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+    <div class="outline-links" id="outline-links">
+      <a href="#top-section" class="outline-link active" data-outline-link="top-section">Top</a>
+      <a href="#contributions-section" class="outline-link" data-outline-link="contributions-section">Contributions</a>
+      <a href="#method-section" class="outline-link" data-outline-link="method-section">Method</a>
+      <a href="#live-demo-section" class="outline-link" data-outline-link="live-demo-section">Live MuJoCo</a>
+      <a href="#generalization-section" class="outline-link" data-outline-link="generalization-section">Objects</a>
+      <a href="#recovery-section" class="outline-link" data-outline-link="recovery-section">Recovery</a>
+      <a href="#longhorizon-section" class="outline-link" data-outline-link="longhorizon-section">Long-horizon</a>
+      <a href="#perception-section" class="outline-link" data-outline-link="perception-section">Perception</a>
+      <a href="#results-section" class="outline-link" data-outline-link="results-section">Results</a>
+      <a href="#abstract-section" class="outline-link" data-outline-link="abstract-section">Abstract</a>
+      <a href="#paper-section" class="outline-link" data-outline-link="paper-section">Paper PDF</a>
+      <a href="#BibTeX" class="outline-link" data-outline-link="BibTeX">BibTeX</a>
+    </div>
   </aside>
 
   <main id="main-content">
@@ -211,7 +218,7 @@
               <span class="title-sub">Generalizable Long-Horizon Humanoid <br>Interaction via Distance Fields</span>
             </h1>
             <div class="is-size-5 publication-authors" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.25em 1em; max-width: 36em; margin-left: auto; margin-right: auto; justify-items: center;">
-              <span class="author-block"><a href="https://yutang-lin.github.io/" class="author-name" target="_blank" rel="noopener">Yutang Lin</a><sup>*, 1, 2</sup></span>
+              <span class="author-block"><a href="https://yutang-lin.github.io/" class="author-name" target="_blank" rel="noopener">Yutang Lin</a><sup>*, 1, 2, 3</sup></span>
               <span class="author-block"><a href="https://jiemingcui.github.io/" class="author-name" target="_blank" rel="noopener">Jieming Cui</a><sup>*, 1, 2, 3</sup></span>
               <span class="author-block"><a href="https://yixxuan-li.github.io/" class="author-name" target="_blank" rel="noopener">Yixuan Li</a><sup>3, 4</sup></span>
               <span class="author-block"><a href="https://buzz-beater.github.io/" class="author-name" target="_blank" rel="noopener">Baoxiong Jia</a><sup>†, 3</sup></span>
@@ -420,7 +427,8 @@
   <div class="container is-max-desktop">
     <h2 class="title is-3 has-text-centered demo-title">1. Interact with Various Objects</h2>
     <p class="has-text-centered demo-desc">
-      One policy generalizes across object shapes and sizes—box, foam cylinder, and ball—without task-specific modules.
+      One policy generalizes across object shapes and sizes—box, foam cylinder, and ball.
+      <br>*The foam cylinder and soccer ball are not in training data.
     </p>
     <div class="demo-tabs" id="demo-tabs-generalization" role="tablist">
       <button type="button" class="demo-tab active" data-video="static/videos/pick_box.mp4" data-label="Pick up: box" aria-selected="true">Pick box</button>
@@ -489,7 +497,7 @@
     </p>
     <div class="demo-tabs" id="demo-tabs-perception" role="tablist">
       <button type="button" class="demo-tab active" data-mocap="static/videos/pick_box.mp4" data-depth="static/videos/pick_box_vision.mp4" data-label="Pick box" aria-selected="true">Pick up</button>
-      <button type="button" class="demo-tab" data-mocap="static/videos/pick_foam.mp4" data-depth="static/videos/pick_foam_vision_1.mp4" data-label="Pick foam">Pick foam</button>
+      <button type="button" class="demo-tab" data-mocap="static/videos/pick_foam.mp4" data-depth="static/videos/pick_foam_vision_2.mp4" data-label="Pick foam">Pick foam</button>
       <button type="button" class="demo-tab" data-mocap="static/videos/push.mp4" data-depth="static/videos/push_vision.mp4" data-label="Push">Push</button>
       <button type="button" class="demo-tab" data-mocap="static/videos/sit_stand.mp4" data-depth="static/videos/sit_vision.mp4" data-label="Sit & stand">Sit & stand</button>
       <button type="button" class="demo-tab" data-mocap="static/videos/carry_box.mp4" data-depth="static/videos/carry_box_vision.mp4" data-label="Carry">Carry</button>
@@ -799,9 +807,9 @@
         <div class="content">
 
           <p>
-            This page was built using the <a href="https://github.com/eliahuhorwitz/Academic-project-page-template" target="_blank" rel="noopener noreferrer">Academic Project Page Template</a> which was adopted from the <a href="https://nerfies.github.io" target="_blank" rel="noopener noreferrer">Nerfies</a> project page.
-            You are free to borrow the source code of this website, we just ask that you link back to this page in the footer. <br> This website is licensed under a <a rel="license noopener noreferrer"  href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank">Creative
-            Commons Attribution-ShareAlike 4.0 International License</a>.
+            Page template from <a href="https://github.com/eliahuhorwitz/Academic-project-page-template" target="_blank" rel="noopener noreferrer">Academic Project Page Template</a> (<a href="https://nerfies.github.io" target="_blank" rel="noopener noreferrer">Nerfies</a>).
+            Live MuJoCo session built on the <a href="https://gentle-humanoid.axell.top/" target="_blank" rel="noopener noreferrer">GentleHumanoid Web</a> framework.
+            Licensed under <a rel="license noopener noreferrer" href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank">CC BY-SA 4.0</a>.
           </p>
 
         </div>

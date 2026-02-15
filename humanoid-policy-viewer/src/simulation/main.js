@@ -703,7 +703,7 @@ export class MuJoCoDemo {
    * Compute SDF grid from parsed OBJ data at the given scale.
    * Scales a copy of the vertices so the grid covers the actual object size.
    */
-  _computeScaledSdf(parsed, scale, onProgress) {
+  _computeScaledSdf(parsed, scale, gridSize = 32, onProgress) {
     let verts = parsed.vertices;
     if (scale !== 1.0) {
       verts = new Float64Array(parsed.vertices.length);
@@ -711,7 +711,7 @@ export class MuJoCoDemo {
         verts[i] = parsed.vertices[i] * scale;
       }
     }
-    return computeSdfGrid(verts, parsed.faces, parsed.numFaces, 32, 1.0, onProgress);
+    return computeSdfGrid(verts, parsed.faces, parsed.numFaces, gridSize, 1.0, onProgress);
   }
 
   /**
@@ -779,21 +779,8 @@ export class MuJoCoDemo {
     const scale = opts.scale ?? 1.0;
     const color = opts.color ?? 0x3b82f6;
 
-    // Compute SDF voxel grid at scaled size (synchronous, OK for small meshes)
-    console.log(`Computing SDF for "${name}" (${parsed.numFaces} triangles, scale=${scale})...`);
-    const sdfData = this._computeScaledSdf(parsed, scale, onProgress);
-    console.log(`SDF computed for "${name}"`);
-
-    // Add to SDF manager (scale=1.0 since SDF already computed at scaled size)
-    if (this.interactionRunner) {
-      const grid = new SDFVoxelGrid(sdfData);
-      this.interactionRunner.sdfManager.grids.set(name, grid);
-      this.interactionRunner.sdfManager.objectPoses.set(name, {
-        pos: new Float32Array(pos),
-        quat: new Float32Array([1, 0, 0, 0]),
-        scale: 1.0,
-      });
-    }
+    // SDF computation is deferred to confirmUserObject() to avoid expensive
+    // computation during preview.  Only the Three.js visual is created here.
 
     // Create THREE.js visual mesh
     const geometry = buildThreeGeometry(parsed.vertices, parsed.faces, parsed.numFaces, THREE);
@@ -817,7 +804,7 @@ export class MuJoCoDemo {
       this.scene.add(mesh);
     }
 
-    this._userObjects[name] = { mesh, parsed, sdfData, scale };
+    this._userObjects[name] = { mesh, parsed, sdfData: null, scale };
     return { name };
   }
 
@@ -848,20 +835,9 @@ export class MuJoCoDemo {
     const obj = this._userObjects[name];
     if (!obj) return;
 
-    // Update THREE.js visual
+    // Update THREE.js visual only; SDF is computed at confirm time
     obj.mesh.scale.set(scale, scale, scale);
     obj.scale = scale;
-
-    // Recompute SDF at new scaled size (grid has limited resolution)
-    const sdfData = this._computeScaledSdf(obj.parsed, scale);
-    obj.sdfData = sdfData;
-
-    if (this.interactionRunner) {
-      const grid = new SDFVoxelGrid(sdfData);
-      this.interactionRunner.sdfManager.grids.set(name, grid);
-      // scale=1.0 since SDF already computed at scaled size
-      this.interactionRunner.sdfManager.setObjectScale(name, 1.0);
-    }
   }
 
   /**
@@ -925,9 +901,18 @@ export class MuJoCoDemo {
    * @param {number} scale
    * @returns {Promise<boolean>} true if successful
    */
-  async confirmUserObject(name, pos, euler, scale, mass = 1.0, friction = 1.0) {
+  async confirmUserObject(name, pos, euler, scale, mass = 1.0, friction = 1.0, sdfResolution = 32, onProgress) {
     const obj = this._userObjects[name];
     if (!obj) return false;
+
+    // Compute SDF at the final scale (deferred from upload time)
+    console.log(`Computing SDF for "${name}" (${obj.parsed.numFaces} triangles, scale=${scale}, grid=${sdfResolution})...`);
+    // Yield to UI before heavy computation
+    await new Promise(r => setTimeout(r, 50));
+    const sdfData = this._computeScaledSdf(obj.parsed, scale, sdfResolution, onProgress);
+    obj.sdfData = sdfData;
+    obj.scale = scale;
+    console.log(`SDF computed for "${name}"`);
 
     const quat = eulerToQuat(euler[0], euler[1], euler[2]);
 
