@@ -307,7 +307,11 @@ function setupContributionCards() {
         });
         card.addEventListener('click', function() {
             var shouldExpand = !card.classList.contains('is-expanded');
-            setActiveCard(card);
+            if (shouldExpand) {
+                setActiveCard(card);
+            } else {
+                clearActiveCard();
+            }
             setExpandedCard(shouldExpand ? card : null);
             cards.forEach(function(node) {
                 node.setAttribute('aria-pressed', String(node === card));
@@ -320,7 +324,11 @@ function setupContributionCards() {
             if (event.key === 'Enter' || event.key === ' ') {
                 event.preventDefault();
                 var shouldExpand = !card.classList.contains('is-expanded');
-                setActiveCard(card);
+                if (shouldExpand) {
+                    setActiveCard(card);
+                } else {
+                    clearActiveCard();
+                }
                 setExpandedCard(shouldExpand ? card : null);
                 cards.forEach(function(node) {
                     node.setAttribute('aria-pressed', String(node === card));
@@ -336,17 +344,35 @@ function setupContributionCards() {
             }
             if (event.key === 'Escape') {
                 setExpandedCard(null);
+                clearActiveCard();
             }
         });
     });
 
-    setActiveCard(cards[0]);
-    setExpandedCard(cards[0]);
+    // Default: all collapsed, no highlights
+    function clearActiveCard() {
+        cards.forEach(function(card) {
+            card.classList.remove('is-active');
+        });
+    }
+
+    // Clear active highlight when mouse leaves the contributions grid
+    var grid = document.querySelector('.contribution-grid');
+    if (grid) {
+        grid.addEventListener('mouseleave', function() {
+            // Only clear active if nothing is expanded
+            var anyExpanded = document.querySelector('.contribution-card.is-expanded');
+            if (!anyExpanded) {
+                clearActiveCard();
+            }
+        });
+    }
 
     document.addEventListener('click', function(event) {
         var clickedCard = event.target.closest('.contribution-card');
         if (!clickedCard) {
             setExpandedCard(null);
+            clearActiveCard();
         }
     });
 }
@@ -383,16 +409,7 @@ function setupMujocoSessionLauncher() {
     var phoneDisabledNote = document.getElementById('mujoco-session-disabled-note');
     if (!section || !frameWrap || !startButton || !iframe) return;
 
-    var isPhoneViewport = window.matchMedia('(max-width: 767px)').matches;
-    if (isPhoneViewport) {
-        section.classList.add('is-phone-disabled');
-        startButton.disabled = true;
-        startButton.setAttribute('aria-disabled', 'true');
-        if (phoneDisabledNote) {
-            phoneDisabledNote.hidden = false;
-        }
-        return;
-    }
+    // MuJoCo now works on mobile — no phone gate
 
     var loadingOverlay = document.getElementById('mujoco-loading-overlay');
 

@@ -212,12 +212,17 @@
             <div class="is-size-5 publication-authors">
               <span class="eql-cntrb"><small><sup>*</sup>Equal contribution &nbsp; <sup>†</sup>Corresponding author</small></span>
             </div>
-            <div class="is-size-6 publication-authors" style="margin-top: 0.5em; line-height: 1.8; text-align: center;">
-              <div><sup>1</sup>School of Psychological and Cognitive Sciences, Peking University</div>
-              <div><sup>2</sup>Institute for Artificial Intelligence, Peking University</div>
-              <div><sup>3</sup>State Key Laboratory of General Artificial Intelligence, BIGAI</div>
-              <div><sup>4</sup>School of Computer Science and Technology, Beijing Institute of Technology</div>
-              <div><sup>5</sup>Embodied Intelligence Lab, PKU-Wuhan Institute for Artificial Intelligence</div>
+            <div class="affiliations-wrap" style="margin-top: 0.5em; text-align: center;">
+              <button type="button" class="affiliations-toggle" onclick="this.parentElement.classList.toggle('is-open')">
+                Affiliations <span class="affiliations-arrow">&#x25BC;</span>
+              </button>
+              <div class="affiliations-body is-size-6 publication-authors" style="line-height: 1.8;">
+                <div><sup>1</sup>School of Psychological and Cognitive Sciences, Peking University</div>
+                <div><sup>2</sup>Institute for Artificial Intelligence, Peking University</div>
+                <div><sup>3</sup>State Key Laboratory of General Artificial Intelligence, BIGAI</div>
+                <div><sup>4</sup>School of Computer Science and Technology, Beijing Institute of Technology</div>
+                <div><sup>5</sup>Embodied Intelligence Lab, PKU-Wuhan Institute for Artificial Intelligence</div>
+              </div>
             </div>
             <!-- <div class="is-size-5 publication-authors" style="margin-top: 0.5em;">
               <a href="https://df-act.github.io" target="_blank" rel="noopener noreferrer">Project Website: https://df-act.github.io</a>
@@ -404,12 +409,6 @@
       <br>Note: The objects' DF is discretized and cached, so the policy's performance is slightly degraded. To report issues, please contact <a href="mailto:yutang.lin@stu.pku.edu.cn">yutang.lin@stu.pku.edu.cn</a>.
       <br><b>Please use Google Chrome for best performance.</b>
     </p>
-    <div class="mujoco-session-disabled-note" id="mujoco-session-disabled-note" hidden>
-      <div class="notification is-warning is-light has-text-centered">
-        <i class="fas fa-desktop" style="margin-right: 0.4em;"></i>
-        The live MuJoCo session is only available on desktop.
-      </div>
-    </div>
   </div>
 </section>
 

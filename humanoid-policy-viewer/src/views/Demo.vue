@@ -23,17 +23,6 @@
   </transition>
   <div class="global-alerts">
     <v-alert
-      v-if="isSmallScreen"
-      v-model="showSmallScreenAlert"
-      type="warning"
-      variant="flat"
-      density="compact"
-      closable
-      class="small-screen-alert"
-    >
-      Screen too small. The control panel is unavailable on small screens. Please use a desktop device.
-    </v-alert>
-    <v-alert
       v-if="isSafari"
       v-model="showSafariAlert"
       type="warning"
@@ -45,6 +34,98 @@
       Safari has lower memory limits, which can cause WASM to crash.
     </v-alert>
   </div>
+  <!-- Mobile UI -->
+  <template v-if="isSmallScreen && state === 1">
+    <!-- Joystick (bottom-left) -->
+    <div class="mobile-joystick"
+      @touchstart.prevent="onJoystickStart"
+      @touchmove.prevent="onJoystickMove"
+      @touchend.prevent="onJoystickEnd"
+      @touchcancel.prevent="onJoystickEnd"
+    >
+      <div class="joystick-base">
+        <div class="joystick-knob" :style="joystickKnobStyle"></div>
+      </div>
+    </div>
+    <!-- Turn buttons (bottom-right) -->
+    <div class="mobile-turn-buttons">
+      <button class="mobile-turn-btn"
+        @touchstart.prevent="startTurn(-1)" @touchend.prevent="stopTurn()" @touchcancel.prevent="stopTurn()">&#x21B6;</button>
+      <button class="mobile-turn-btn"
+        @touchstart.prevent="startTurn(1)" @touchend.prevent="stopTurn()" @touchcancel.prevent="stopTurn()">&#x21B7;</button>
+    </div>
+    <!-- Slide-up drawer toggle -->
+    <button class="mobile-drawer-toggle" @click="mobileDrawerOpen = !mobileDrawerOpen">
+      <span class="mobile-drawer-chevron" :class="{ open: mobileDrawerOpen }">&#x25B2;</span>
+      <span>Controls</span>
+    </button>
+    <!-- Slide-up drawer -->
+    <transition name="drawer-slide">
+      <div v-if="mobileDrawerOpen" class="mobile-drawer">
+        <div class="mobile-drawer-content">
+          <div class="mobile-drawer-section">
+            <div class="mobile-drawer-label">Task</div>
+            <div class="mobile-drawer-row">
+              <button :class="['mobile-task-btn', { active: taskConditionLabel === 'None' }]" @click="setTaskCondition(0)">None</button>
+              <button :class="['mobile-task-btn', { active: taskConditionLabel === 'Carry' }]" @click="setTaskCondition(1)">Carry</button>
+              <button :class="['mobile-task-btn', { active: taskConditionLabel === 'Push' }]" @click="setTaskCondition(2)">Push</button>
+              <button class="mobile-task-btn mobile-reset-btn" @click="reset()">Reset</button>
+            </div>
+          </div>
+          <div class="mobile-drawer-section">
+            <div class="mobile-drawer-label">Upload Object</div>
+            <div class="mobile-drawer-row">
+              <input ref="mobileMeshFileInput" type="file" accept=".obj,.stl" style="display:none" @change="onMeshFileSelected" />
+              <button class="mobile-task-btn" :disabled="objComputing" @click="$refs.mobileMeshFileInput.click()">Upload .obj/.stl</button>
+            </div>
+            <template v-if="userObjects.length > 0">
+              <div class="mobile-drawer-label" style="margin-top:8px;cursor:pointer;display:flex;align-items:center;gap:4px" @click="mobileObjectListOpen = !mobileObjectListOpen">
+                <span style="font-size:0.6rem">{{ mobileObjectListOpen ? '&#x25BC;' : '&#x25B6;' }}</span>
+                Objects ({{ userObjects.length }})
+              </div>
+              <div v-if="mobileObjectListOpen">
+                <div v-for="obj in userObjects" :key="'m-'+obj.name" class="mobile-obj-item-card">
+                  <div class="mobile-obj-header" @click="obj.expanded = !obj.expanded">
+                    <span class="mobile-obj-name">{{ obj.label }} <span v-if="obj.confirmed" style="color:#4caf50">&#x2713;</span></span>
+                    <span style="font-size:0.55rem;color:#94a3b8">{{ obj.expanded ? '&#x25BC;' : '&#x25B6;' }}</span>
+                  </div>
+                  <div v-if="obj.expanded" class="mobile-obj-controls">
+                    <div class="mobile-obj-grid">
+                      <span class="mobile-obj-grid-label">Pos</span>
+                      <input type="number" step="0.1" :value="obj.pos[0].toFixed(2)" class="mobile-obj-input" :disabled="obj.confirmed" @change="onObjPosChange(obj.name, 0, $event)" placeholder="X"/>
+                      <input type="number" step="0.1" :value="obj.pos[1].toFixed(2)" class="mobile-obj-input" :disabled="obj.confirmed" @change="onObjPosChange(obj.name, 1, $event)" placeholder="Y"/>
+                      <input type="number" step="0.1" :value="obj.pos[2].toFixed(2)" class="mobile-obj-input" :disabled="obj.confirmed" @change="onObjPosChange(obj.name, 2, $event)" placeholder="Z"/>
+                    </div>
+                    <div class="mobile-obj-grid">
+                      <span class="mobile-obj-grid-label">Rot</span>
+                      <input type="number" step="5" :value="obj.euler[0].toFixed(1)" class="mobile-obj-input" :disabled="obj.confirmed" @change="onObjEulerChange(obj.name, 0, $event)" placeholder="R"/>
+                      <input type="number" step="5" :value="obj.euler[1].toFixed(1)" class="mobile-obj-input" :disabled="obj.confirmed" @change="onObjEulerChange(obj.name, 1, $event)" placeholder="P"/>
+                      <input type="number" step="5" :value="obj.euler[2].toFixed(1)" class="mobile-obj-input" :disabled="obj.confirmed" @change="onObjEulerChange(obj.name, 2, $event)" placeholder="Y"/>
+                    </div>
+                    <div class="mobile-obj-slider-row">
+                      <span class="mobile-obj-slider-label">Scale {{ obj.scale.toFixed(2) }}</span>
+                      <input type="range" min="0.1" max="3.0" step="0.05" :value="obj.scale" class="mobile-obj-range" :disabled="obj.confirmed" @input="onObjScaleChange(obj.name, $event.target.value)"/>
+                    </div>
+                    <div class="mobile-obj-slider-row">
+                      <span class="mobile-obj-slider-label">Mass {{ obj.mass.toFixed(1) }}kg</span>
+                      <input type="range" min="0.5" max="20.0" step="0.1" :value="obj.mass" class="mobile-obj-range" :disabled="obj.confirmed" @input="onObjMassChange(obj.name, $event.target.value)"/>
+                    </div>
+                    <div class="mobile-obj-slider-row">
+                      <span class="mobile-obj-slider-label">Friction {{ obj.friction.toFixed(1) }}</span>
+                      <input type="range" min="0.1" max="3.0" step="0.1" :value="obj.friction" class="mobile-obj-range" :disabled="obj.confirmed" @input="onObjFrictionChange(obj.name, $event.target.value)"/>
+                    </div>
+                    <button v-if="!obj.confirmed" class="mobile-task-btn mobile-confirm-btn" style="width:100%;margin-top:6px" :disabled="obj.confirming||objComputing" @click="confirmUserObj(obj.name)">
+                      {{ obj.confirming ? 'Computing SDF...' : 'Add to Simulation' }}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </template>
+          </div>
+        </div>
+      </div>
+    </transition>
+  </template>
   <div v-if="!isSmallScreen" class="controls">
     <v-card class="controls-card">
       <v-card-title>DF-Act Interaction Demo</v-card-title>
@@ -110,7 +191,12 @@
             Upload Mesh
           </v-btn>
         </div>
-        <div v-if="sectionObject && userObjects.length > 0" class="user-objects-list mt-2">
+        <div v-if="sectionObject && userObjects.length > 0" class="mt-2">
+          <div class="section-header" @click="sectionObjectList = !sectionObjectList">
+            <v-icon size="14" class="section-chevron">{{ sectionObjectList ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
+            <span class="status-name text-caption">Objects ({{ userObjects.length }})</span>
+          </div>
+          <div v-if="sectionObjectList" class="user-objects-list mt-1">
           <div v-for="obj in userObjects" :key="obj.name" class="user-object-item">
             <div class="user-object-header">
               <v-btn
@@ -180,6 +266,7 @@
                 class="mt-1"
               ></v-progress-linear>
             </div>
+          </div>
           </div>
         </div>
 
@@ -310,8 +397,18 @@ export default {
     sectionObject: true,
     sectionSettings: false,
     cameraFollowEnabled: true,
+    // Mobile joystick state
+    joystickX: 0,
+    joystickY: 0,
+    joystickActive: false,
+    _joystickRafId: null,
+    _turnDir: 0,
+    _turnRafId: null,
     sdfVisEnabled: true,
     showShortcuts: false,
+    mobileDrawerOpen: false,
+    mobileObjectListOpen: true,
+    sectionObjectList: true,
     sdfResolution: 32,
     renderScale: 2.0,
     simStepHz: 0,
@@ -335,6 +432,11 @@ export default {
         return '—';
       }
       return `${this.simStepHz.toFixed(1)} Hz`;
+    },
+    joystickKnobStyle() {
+      return {
+        transform: `translate(${this.joystickX * 30}px, ${this.joystickY * -30}px)`
+      };
     }
   },
   methods: {
@@ -350,11 +452,7 @@ export default {
         && !/FxiOS\//.test(ua);
     },
     updateScreenState() {
-      const isSmall = window.innerWidth < 500 || window.innerHeight < 700;
-      if (!isSmall && this.isSmallScreen) {
-        this.showSmallScreenAlert = true;
-      }
-      this.isSmallScreen = isSmall;
+      this.isSmallScreen = window.innerWidth < 500 || window.innerHeight < 700;
     },
     async init() {
       if (typeof WebAssembly !== 'object' || typeof WebAssembly.instantiate !== 'function') {
@@ -374,9 +472,11 @@ export default {
         this.state = 1;
         // Signal parent page that the viewer is ready (dismisses loading overlay)
         try { window.parent.postMessage({ type: 'df-act-ready' }, '*'); } catch (e) {}
-        // Show shortcut overlay briefly on first load
-        this.showShortcuts = true;
-        setTimeout(() => { this.showShortcuts = false; }, 4000);
+        // Show shortcut overlay briefly on first load (desktop only)
+        if (!this.isSmallScreen) {
+          this.showShortcuts = true;
+          setTimeout(() => { this.showShortcuts = false; }, 4000);
+        }
       } catch (error) {
         this.state = -1;
         this.extra_error_message = error.toString();
@@ -431,6 +531,60 @@ export default {
       runner.targetRootQuat[1] = rw * ax + rx * aw + ry * az - rz * ay;
       runner.targetRootQuat[2] = rw * ay - rx * az + ry * aw + rz * ax;
       runner.targetRootQuat[3] = rw * az + rx * ay - ry * ax + rz * aw;
+    },
+    // --- Mobile joystick ---
+    onJoystickStart(e) {
+      this.joystickActive = true;
+      this._joystickOrigin = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+      this._joystickLastTime = performance.now();
+      if (!this._joystickRafId) this._joystickRafId = requestAnimationFrame(this._joystickLoop.bind(this));
+    },
+    onJoystickMove(e) {
+      if (!this.joystickActive || !this._joystickOrigin) return;
+      const dx = e.touches[0].clientX - this._joystickOrigin.x;
+      const dy = e.touches[0].clientY - this._joystickOrigin.y;
+      const maxR = 30;
+      const len = Math.sqrt(dx * dx + dy * dy);
+      const clamp = Math.min(len, maxR) / maxR;
+      if (len > 0) {
+        this.joystickX = (dx / len) * clamp;
+        this.joystickY = -(dy / len) * clamp; // invert Y: up = positive
+      }
+    },
+    onJoystickEnd() {
+      this.joystickActive = false;
+      this.joystickX = 0;
+      this.joystickY = 0;
+      this._joystickRafId = null;
+    },
+    _joystickLoop() {
+      if (!this.joystickActive) { this._joystickRafId = null; return; }
+      const now = performance.now();
+      let dt = (now - this._joystickLastTime) / 1000;
+      if (dt > 0.05) dt = 0.05;
+      this._joystickLastTime = now;
+      const SPEED = 1.5;
+      if (Math.abs(this.joystickY) > 0.05) this.moveTargetRoot(this.joystickY * SPEED * dt, 0, 0);
+      if (Math.abs(this.joystickX) > 0.05) this.moveTargetRoot(0, -this.joystickX * SPEED * dt, 0);
+      this._joystickRafId = requestAnimationFrame(this._joystickLoop.bind(this));
+    },
+    startTurn(dir) {
+      this._turnDir = dir;
+      this._turnLastTime = performance.now();
+      if (!this._turnRafId) this._turnRafId = requestAnimationFrame(this._turnLoop.bind(this));
+    },
+    stopTurn() {
+      this._turnDir = 0;
+      this._turnRafId = null;
+    },
+    _turnLoop() {
+      if (this._turnDir === 0) { this._turnRafId = null; return; }
+      const now = performance.now();
+      let dt = (now - this._turnLastTime) / 1000;
+      if (dt > 0.05) dt = 0.05;
+      this._turnLastTime = now;
+      this.rotateTargetRoot(this._turnDir * 2.0 * dt);
+      this._turnRafId = requestAnimationFrame(this._turnLoop.bind(this));
     },
     async onMeshFileSelected(event) {
       const file = event.target.files?.[0];
@@ -884,6 +1038,285 @@ export default {
 .motion-progress-no-animation :deep(.v-progress-linear__background) {
   transition: none !important;
   animation: none !important;
+}
+
+/* ── Mobile controls ── */
+.mobile-joystick {
+  position: fixed;
+  bottom: 24px;
+  left: 16px;
+  z-index: 1100;
+  touch-action: none;
+}
+
+.joystick-base {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background: rgba(30, 41, 59, 0.45);
+  border: 2px solid rgba(255, 255, 255, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.joystick-knob {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.25);
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  transition: transform 0.05s ease-out;
+}
+
+.mobile-turn-buttons {
+  position: fixed;
+  bottom: 24px;
+  right: 16px;
+  display: flex;
+  gap: 8px;
+  z-index: 1100;
+}
+
+.mobile-turn-btn {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.12);
+  background: rgba(30, 41, 59, 0.45);
+  color: #e2e8f0;
+  font-size: 1.3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  touch-action: manipulation;
+}
+
+.mobile-turn-btn:active {
+  background: rgba(37, 99, 235, 0.5);
+}
+
+/* Drawer toggle button (top-right) */
+.mobile-drawer-toggle {
+  position: fixed;
+  top: 8px;
+  right: 8px;
+  z-index: 1200;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 14px;
+  border: none;
+  border-radius: 20px;
+  background: rgba(30, 41, 59, 0.8);
+  color: #e2e8f0;
+  font-size: 0.78rem;
+  font-weight: 600;
+  backdrop-filter: blur(6px);
+  touch-action: manipulation;
+}
+
+.mobile-drawer-chevron {
+  font-size: 0.6rem;
+  transition: transform 0.2s ease;
+  transform: rotate(180deg);
+}
+
+.mobile-drawer-chevron.open {
+  transform: rotate(0deg);
+}
+
+/* Slide-up drawer */
+.mobile-drawer {
+  position: fixed;
+  top: 40px;
+  right: 8px;
+  left: 8px;
+  z-index: 1150;
+  max-height: calc(100vh - 180px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  border-radius: 12px;
+  background: rgba(15, 23, 42, 0.92);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.mobile-drawer-content {
+  padding: 12px;
+}
+
+.mobile-drawer-section {
+  margin-bottom: 10px;
+}
+
+.mobile-drawer-section:last-child {
+  margin-bottom: 0;
+}
+
+.mobile-drawer-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 6px;
+}
+
+.mobile-drawer-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.mobile-task-btn {
+  padding: 6px 14px;
+  border: none;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #e2e8f0;
+  font-size: 0.75rem;
+  font-weight: 600;
+  touch-action: manipulation;
+}
+
+.mobile-task-btn:disabled {
+  opacity: 0.4;
+}
+
+.mobile-task-btn.active {
+  background: #2563eb;
+  color: #fff;
+}
+
+.mobile-reset-btn {
+  background: rgba(185, 28, 28, 0.6);
+}
+
+.mobile-obj-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 6px;
+  padding: 4px 0;
+}
+
+.mobile-obj-name {
+  font-size: 0.75rem;
+  color: #cbd5e1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+}
+
+.mobile-confirm-btn {
+  background: rgba(34, 197, 94, 0.3);
+  flex-shrink: 0;
+  margin-left: 8px;
+}
+
+.mobile-obj-item-card {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 6px 10px;
+  margin-top: 6px;
+}
+
+.mobile-obj-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+.mobile-obj-controls {
+  margin-top: 6px;
+}
+
+.mobile-obj-grid {
+  display: grid;
+  grid-template-columns: 28px 1fr 1fr 1fr;
+  gap: 3px 4px;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.mobile-obj-grid-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: #94a3b8;
+}
+
+.mobile-obj-input {
+  width: 100%;
+  padding: 3px 4px;
+  font-size: 0.7rem;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.06);
+  color: #e2e8f0;
+  -moz-appearance: textfield;
+}
+
+.mobile-obj-input::-webkit-inner-spin-button,
+.mobile-obj-input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.mobile-obj-input:disabled {
+  opacity: 0.4;
+}
+
+.mobile-obj-slider-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 2px;
+}
+
+.mobile-obj-slider-label {
+  font-size: 0.65rem;
+  color: #94a3b8;
+  white-space: nowrap;
+  min-width: 70px;
+}
+
+.mobile-obj-range {
+  flex: 1;
+  height: 4px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 2px;
+  outline: none;
+}
+
+.mobile-obj-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #2563eb;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.mobile-obj-range:disabled {
+  opacity: 0.4;
+}
+
+/* Drawer transition */
+.drawer-slide-enter-active,
+.drawer-slide-leave-active {
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.drawer-slide-enter-from,
+.drawer-slide-leave-to {
+  opacity: 0;
+  transform: translateY(-10px);
 }
 
 /* Keyboard shortcut overlay */
