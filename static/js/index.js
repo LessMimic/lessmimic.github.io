@@ -462,6 +462,91 @@ function setupMujocoSessionLauncher() {
     }
 }
 
+/* ── Scroll-triggered reveal animations ── */
+function setupRevealAnimations() {
+    var els = document.querySelectorAll('.reveal, .reveal--left, .reveal--right, .reveal--scale, .reveal--fade');
+    if (!els.length || !('IntersectionObserver' in window)) {
+        // Fallback: show everything immediately
+        els.forEach(function(el) { el.classList.add('is-visible'); });
+        return;
+    }
+
+    // Assign stagger indices to children of .reveal-stagger parents
+    document.querySelectorAll('.reveal-stagger').forEach(function(parent) {
+        var children = parent.querySelectorAll('.reveal, .reveal--left, .reveal--right, .reveal--scale');
+        children.forEach(function(child, i) {
+            child.style.setProperty('--reveal-i', i);
+        });
+    });
+
+    var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('is-visible');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+
+    els.forEach(function(el) { observer.observe(el); });
+}
+
+/* ── Bar chart grow animation ── */
+function setupBarChartAnimation() {
+    var card = document.querySelector('.stats-card');
+    if (!card || !('IntersectionObserver' in window)) return;
+
+    var rects = card.querySelectorAll('rect');
+    if (!rects.length) return;
+
+    // Store original values and collapse to baseline
+    var originals = [];
+    rects.forEach(function(rect) {
+        var y = parseFloat(rect.getAttribute('y'));
+        var h = parseFloat(rect.getAttribute('height'));
+        originals.push({ y: y, h: h });
+        rect.setAttribute('y', y + h);
+        rect.setAttribute('height', 0);
+        rect.style.transition = 'none';
+    });
+
+    var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('is-visible');
+                rects.forEach(function(rect, i) {
+                    setTimeout(function() {
+                        rect.style.transition = 'y 0.5s cubic-bezier(0.4,0,0.2,1), height 0.5s cubic-bezier(0.4,0,0.2,1)';
+                        rect.setAttribute('y', originals[i].y);
+                        rect.setAttribute('height', originals[i].h);
+                    }, i * 30);
+                });
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.2 });
+
+    observer.observe(card);
+}
+
+/* ── Line chart stats card animation ── */
+function setupLineChartAnimation() {
+    var cards = document.querySelectorAll('.stats-card');
+    if (cards.length < 2 || !('IntersectionObserver' in window)) return;
+
+    var lineCard = cards[1]; // second stats card
+    var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('is-visible');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.25 });
+
+    observer.observe(lineCard);
+}
+
 function setupOutlinePanel() {
     var panel = document.querySelector('.outline-panel');
     var outlineLinks = Array.from(document.querySelectorAll('.outline-panel .outline-link[data-outline-link]'));
@@ -543,6 +628,11 @@ document.addEventListener('DOMContentLoaded', function() {
     setupMujocoSessionLauncher();
     setupOutlinePanel();
     setupLazyVideos();
+
+    // Scroll-triggered reveal animations
+    setupRevealAnimations();
+    setupBarChartAnimation();
+    setupLineChartAnimation();
 
     // Non-critical enhancements are isolated so they cannot block button behavior.
     try {

@@ -129,8 +129,29 @@ body {
 
 .hero.is-light {
   background: var(--background-secondary);
-  border-top: 1px solid var(--border-color);
-  border-bottom: 1px solid var(--border-color);
+  border-top: none;
+  border-bottom: none;
+}
+
+.hero.is-light::before,
+.hero.is-light::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 32px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.hero.is-light::before {
+  top: 0;
+  background: linear-gradient(to bottom, var(--background-primary), transparent);
+}
+
+.hero.is-light::after {
+  bottom: 0;
+  background: linear-gradient(to top, var(--background-primary), transparent);
 }
 
 .hero-body {
@@ -443,11 +464,16 @@ body {
   position: absolute;
   bottom: 0;
   left: 50%;
-  transform: translateX(-50%);
   width: 60px;
   height: 3px;
   background: var(--gradient-accent);
   border-radius: 2px;
+  transform: translateX(-50%) scaleX(0);
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1) 0.25s;
+}
+
+.title.is-3.is-visible::after {
+  transform: translateX(-50%) scaleX(1);
 }
 
 /* Content Improvements */
@@ -1148,11 +1174,74 @@ code {
   }
 }
 
-/* Animation for page load */
-@keyframes fadeInUp {
+/* ── Scroll-triggered reveal system ── */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: opacity, transform;
+}
+
+.reveal--left {
+  opacity: 0;
+  transform: translateX(-24px);
+  transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: opacity, transform;
+}
+
+.reveal--right {
+  opacity: 0;
+  transform: translateX(24px);
+  transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: opacity, transform;
+}
+
+.reveal--scale {
+  opacity: 0;
+  transform: scale(0.96);
+  transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: opacity, transform;
+}
+
+/* Opacity-only reveal for elements whose own CSS sets a transform (e.g. centering via translateX).
+   Does not touch transform at all — only fades in. */
+.reveal--fade {
+  opacity: 0;
+  transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: opacity;
+}
+
+.reveal--fade.is-visible {
+  opacity: 1;
+  will-change: auto;
+}
+
+.reveal.is-visible,
+.reveal--left.is-visible,
+.reveal--right.is-visible,
+.reveal--scale.is-visible {
+  opacity: 1;
+  transform: none;
+  will-change: auto;
+}
+
+/* Stagger children inside a .reveal-stagger parent */
+.reveal-stagger > .reveal,
+.reveal-stagger > .reveal--left,
+.reveal-stagger > .reveal--right,
+.reveal-stagger > .reveal--scale {
+  transition-delay: calc(var(--reveal-i, 0) * 80ms);
+}
+
+/* ── Hero stagger entrance (pure CSS) ── */
+@keyframes heroFadeIn {
   from {
     opacity: 0;
-    transform: translateY(30px);
+    transform: translateY(18px);
   }
   to {
     opacity: 1;
@@ -1160,9 +1249,16 @@ code {
   }
 }
 
-.hero, .section {
-  animation: fadeInUp 0.6s ease-out;
+.hero-stagger {
+  opacity: 0;
+  animation: heroFadeIn 0.7s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
+
+.hero-stagger--1 { animation-delay: 0.1s; }
+.hero-stagger--2 { animation-delay: 0.25s; }
+.hero-stagger--3 { animation-delay: 0.4s; }
+.hero-stagger--4 { animation-delay: 0.55s; }
+.hero-stagger--5 { animation-delay: 0.7s; }
 
 /* Improved focus states for accessibility */
 .button:focus,
@@ -1324,19 +1420,27 @@ a:focus,
   }
 
   .contributions-section .contribution-popover {
-    display: none;
     position: static;
     width: 100%;
-    margin-top: 0.6rem;
-    padding: 0.7rem 0.85rem;
+    margin-top: 0;
+    padding: 0 0.85rem;
     border-radius: 10px;
     transform: none !important;
     opacity: 1;
     visibility: visible;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+                padding 0.35s ease,
+                margin-top 0.35s ease;
+    border-left: 3px solid transparent;
   }
 
   .contributions-section .contribution-card.is-expanded .contribution-popover {
-    display: block;
+    max-height: 200px;
+    padding: 0.7rem 0.85rem;
+    margin-top: 0.6rem;
+    border-left-color: var(--primary-color);
   }
 
   .contributions-section .contribution-popover h4 {
@@ -1995,6 +2099,47 @@ a:focus,
   font-size: 8px;
   font-weight: 700;
   text-anchor: middle;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.stats-card.is-visible .bar-value-text {
+  opacity: 1;
+  transition-delay: 0.8s;
+}
+
+/* Line chart draw animation */
+.stats-section .line-main {
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 1000;
+  transition: stroke-dashoffset 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.stats-card.is-visible .line-main {
+  stroke-dashoffset: 0;
+}
+
+.stats-section .line-point {
+  transform: scale(0);
+  transform-origin: center;
+  transform-box: fill-box;
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.stats-card.is-visible .line-point:nth-of-type(1) { transform: scale(1); transition-delay: 0.25s; }
+.stats-card.is-visible .line-point:nth-of-type(2) { transform: scale(1); transition-delay: 0.5s; }
+.stats-card.is-visible .line-point:nth-of-type(3) { transform: scale(1); transition-delay: 0.7s; }
+.stats-card.is-visible .line-point:nth-of-type(4) { transform: scale(1); transition-delay: 0.9s; }
+.stats-card.is-visible .line-point:nth-of-type(5) { transform: scale(1); transition-delay: 1.05s; }
+
+.stats-section .value-text {
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.stats-card.is-visible .value-text {
+  opacity: 1;
+  transition-delay: 1s;
 }
 
 .stats-section .stats-legend {
@@ -2117,8 +2262,10 @@ a:focus,
     display: none;
   }
 
-  .hero, .section {
-    animation: none;
+  .reveal, .reveal--left, .reveal--right, .reveal--scale, .reveal--fade, .hero-stagger {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
   }
 
   .button {

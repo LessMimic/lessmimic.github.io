@@ -197,11 +197,11 @@
       <div class="container is-max-desktop">
         <div class="columns is-centered">
           <div class="column has-text-centered hero-main-content">
-            <h1 class="title is-1 publication-title">
+            <h1 class="title is-1 publication-title hero-stagger hero-stagger--1">
               <span class="title-main">DF-ACT</span>
               <span class="title-sub">Generalizable Long-Horizon Humanoid <br>Interaction via Distance Fields</span>
             </h1>
-            <div class="is-size-5 publication-authors" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.25em 1em; max-width: 36em; margin-left: auto; margin-right: auto; justify-items: center;">
+            <div class="is-size-5 publication-authors hero-stagger hero-stagger--2" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.25em 1em; max-width: 36em; margin-left: auto; margin-right: auto; justify-items: center;">
               <span class="author-block"><a href="https://yutang-lin.github.io/" class="author-name" target="_blank" rel="noopener">Yutang Lin</a><sup>*, 1, 2, 3</sup></span>
               <span class="author-block"><a href="https://jiemingcui.github.io/" class="author-name" target="_blank" rel="noopener">Jieming Cui</a><sup>*, 1, 2, 3</sup></span>
               <span class="author-block"><a href="https://yixxuan-li.github.io/" class="author-name" target="_blank" rel="noopener">Yixuan Li</a><sup>3, 4</sup></span>
@@ -209,10 +209,10 @@
               <span class="author-block"><a href="https://yzhu.io/" class="author-name" target="_blank" rel="noopener">Yixin Zhu</a><sup>†, 1, 2, 5</sup></span>
               <span class="author-block"><a href="https://siyuanhuang.com/" class="author-name" target="_blank" rel="noopener">Siyuan Huang</a><sup>†, 3</sup></span>
             </div>
-            <div class="is-size-5 publication-authors">
+            <div class="is-size-5 publication-authors hero-stagger hero-stagger--3">
               <span class="eql-cntrb"><small><sup>*</sup>Equal contribution &nbsp; <sup>†</sup>Corresponding author</small></span>
             </div>
-            <div class="affiliations-wrap" style="margin-top: 0.5em; text-align: center;">
+            <div class="affiliations-wrap hero-stagger hero-stagger--4" style="margin-top: 0.5em; text-align: center;">
               <button type="button" class="affiliations-toggle" onclick="this.parentElement.classList.toggle('is-open')">
                 Affiliations <span class="affiliations-arrow">&#x25BC;</span>
               </button>
@@ -227,7 +227,7 @@
             <!-- <div class="is-size-5 publication-authors" style="margin-top: 0.5em;">
               <a href="https://df-act.github.io" target="_blank" rel="noopener noreferrer">Project Website: https://df-act.github.io</a>
             </div> -->
-            <div class="column has-text-centered">
+            <div class="column has-text-centered hero-stagger hero-stagger--5">
               <div class="publication-links">
                 <span class="link-block">
                   <a href="static/pdfs/RSS26_DF_Act.pdf" target="_blank" rel="noopener noreferrer" class="external-link button is-normal is-rounded is-dark">
@@ -270,9 +270,9 @@
 <!-- Key contributions: hover-highlight cards -->
 <section class="section hero is-light contributions-section" id="contributions-section">
   <div class="container is-max-desktop">
-    <h2 class="title is-3 has-text-centered section-heading" id="contributions">Key Contributions <a href="#contributions-section" class="heading-anchor" aria-label="Link to this section">#</a></h2>
-    <div class="contributions-grid">
-      <div class="contribution-card pop-left">
+    <h2 class="title is-3 has-text-centered section-heading reveal" id="contributions">Key Contributions <a href="#contributions-section" class="heading-anchor" aria-label="Link to this section">#</a></h2>
+    <div class="contributions-grid reveal-stagger">
+      <div class="contribution-card pop-left reveal">
         <h3 class="contribution-card-title">Generalize across objects</h3>
         <p class="contribution-card-text">The same policy lifts and manipulates objects with diverse geometry (e.g., 23 cm box to 60 cm cylinder) by operating on a distance-field representation.</p>
         <div class="contribution-popover">
@@ -280,7 +280,7 @@
           <p>We represent interaction in a distance-field space, which acts like a quotiented task space over object geometry. This gives the policy dense local geometric cues that transfer across object shape and scale without redesigning task formulations.</p>
         </div>
       </div>
-      <div class="contribution-card pop-right">
+      <div class="contribution-card pop-right reveal">
         <h3 class="contribution-card-title">Multiple skills in one policy</h3>
         <p class="contribution-card-text">A single policy composes pick up, push, sit/stand, and carry over long horizons without task-specific modules.</p>
         <div class="contribution-popover">
@@ -288,7 +288,7 @@
           <p>We build a unified interaction representation shared by all skills. With one common observation/reward interface across interactions, a single policy can learn skill composition from consistent inputs rather than isolated per-task pipelines.</p>
         </div>
       </div>
-      <div class="contribution-card pop-left">
+      <div class="contribution-card pop-left reveal">
         <h3 class="contribution-card-title">No hand-crafted reward</h3>
         <p class="contribution-card-text">Training uses adversarial interaction priors in the geometric domain instead of motion-tracking or hand-designed shaping rewards.</p>
         <div class="contribution-popover">
@@ -296,7 +296,7 @@
           <p>We use discriminative objectives to enforce natural and physically reasonable interaction trajectories. This removes the need for brittle task-specific reward shaping and improves behavior quality across diverse interaction modes.</p>
         </div>
       </div>
-      <div class="contribution-card pop-right">
+      <div class="contribution-card pop-right reveal">
         <h3 class="contribution-card-title">Root command & action label only</h3>
         <p class="contribution-card-text">At inference, control is specified solely by target root trajectory and action labels; no motion exemplars or retargeting.</p>
         <div class="contribution-popover">
@@ -311,13 +311,13 @@
 <!-- Method overview -->
 <section class="section hero is-light how-section" id="method-section">
   <div class="container is-max-desktop">
-    <h2 class="title is-3 has-text-centered">How We Do It</h2>
-    <p class="has-text-centered demo-desc">
+    <h2 class="title is-3 has-text-centered reveal">How We Do It</h2>
+    <p class="has-text-centered demo-desc reveal">
       We use a distance-field-centric policy representation. The top row visualizes DF-driven interaction for three different skills (pick, push, sit), and the second row shows scale generalization.
     </p>
 
     <div class="how-layout">
-      <div class="how-model-card">
+      <div class="how-model-card reveal--scale">
         <img src="static/images/model.png" alt="DF-ACT method overview converted from model PDF" loading="lazy">
         <div class="how-model-caption">
           <h3>Method Overview</h3>
@@ -375,8 +375,8 @@
 <!-- Live MuJoCo session -->
 <section class="section hero is-light mujoco-session-section" id="live-demo-section">
   <div class="container mujoco-session-container">
-    <h2 class="title is-3 has-text-centered">Live MuJoCo Session</h2>
-    <p class="has-text-centered demo-desc">
+    <h2 class="title is-3 has-text-centered reveal">Live MuJoCo Session</h2>
+    <p class="has-text-centered demo-desc reveal">
       Use this embedded session to inspect online rollout behavior directly in-browser. Add your own objects to the session and interact with them. <br>Feel free to test how purely data-driven interaction policy complete tasks (or fail).
     </p>
     <div class="mujoco-session-frame-wrap">
@@ -415,8 +415,8 @@
 <!-- 1. Generalization: Interact with various objects -->
 <section class="section demo-section hero is-small" id="generalization-section">
   <div class="container is-max-desktop">
-    <h2 class="title is-3 has-text-centered demo-title section-heading">1. Interact with Various Objects <a href="#generalization-section" class="heading-anchor" aria-label="Link to this section">#</a></h2>
-    <p class="has-text-centered demo-desc">
+    <h2 class="title is-3 has-text-centered demo-title section-heading reveal">1. Interact with Various Objects <a href="#generalization-section" class="heading-anchor" aria-label="Link to this section">#</a></h2>
+    <p class="has-text-centered demo-desc reveal">
       One policy generalizes across object shapes and sizes—box, foam cylinder, and ball.
       <br>*The foam cylinder and soccer ball are not in training data.
     </p>
@@ -428,7 +428,7 @@
       <button type="button" class="demo-tab" data-video="static/videos/sit_chest.mp4" data-label="Sit on chest">Sit on chest</button>
       <button type="button" class="demo-tab" data-video="static/videos/push.mp4" data-label="Push chest">Push chest</button>
     </div>
-    <div class="demo-main-video-wrap">
+    <div class="demo-main-video-wrap reveal">
       <video id="demo-video-generalization" controls muted loop playsinline preload="none">
         <source data-src="static/videos/pick_box.mp4" type="video/mp4">
       </video>
@@ -440,8 +440,8 @@
 <!-- 2. Recovery from disturbance/failure -->
 <section class="section demo-section hero is-small is-light" id="recovery-section">
   <div class="container is-max-desktop">
-    <h2 class="title is-3 has-text-centered demo-title section-heading">2. Autonomously Recover from Disturbance/Failure <a href="#recovery-section" class="heading-anchor" aria-label="Link to this section">#</a></h2>
-    <p class="has-text-centered demo-desc">
+    <h2 class="title is-3 has-text-centered demo-title section-heading reveal">2. Autonomously Recover from Disturbance/Failure <a href="#recovery-section" class="heading-anchor" aria-label="Link to this section">#</a></h2>
+    <p class="has-text-centered demo-desc reveal">
       After external disturbance or failed pickup attempts, the policy re-initiates interaction and recovers autonomously using continuous geometric feedback.
     </p>
     <div class="demo-tabs" id="demo-tabs-recovery" role="tablist">
@@ -449,7 +449,7 @@
       <button type="button" class="demo-tab" data-video="static/videos/recover_foam.mp4" data-label="Recovery: foam after disturbance">Recover (foam)</button>
       <button type="button" class="demo-tab" data-video="static/videos/recover_soccer.mp4" data-label="Recovery: soccer after slipperiness">Recover (soccer)</button>
     </div>
-    <div class="demo-main-video-wrap">
+    <div class="demo-main-video-wrap reveal">
       <video id="demo-video-recovery" controls muted loop playsinline preload="none">
         <source data-src="static/videos/recover_box.mp4" type="video/mp4">
       </video>
@@ -461,15 +461,15 @@
 <!-- 3. Long-horizon: Consequent multi-skill tasks -->
 <section class="section demo-section hero is-small" id="longhorizon-section">
   <div class="container is-max-desktop">
-    <h2 class="title is-3 has-text-centered demo-title section-heading">3. Execute Consequent Long-Horizon Tasks <a href="#longhorizon-section" class="heading-anchor" aria-label="Link to this section">#</a></h2>
-    <p class="has-text-centered demo-desc">
+    <h2 class="title is-3 has-text-centered demo-title section-heading reveal">3. Execute Consequent Long-Horizon Tasks <a href="#longhorizon-section" class="heading-anchor" aria-label="Link to this section">#</a></h2>
+    <p class="has-text-centered demo-desc reveal">
       A single policy composes multiple skills in sequence over extended horizons, showing smooth transitions between interaction modes.
     </p>
     <div class="demo-tabs" id="demo-tabs-longhorizon" role="tablist">
       <button type="button" class="demo-tab active" data-video="static/videos/sit_push.mp4" data-label="Combination: sit → push (2x speed)" aria-selected="true">Sit → push</button>
       <button type="button" class="demo-tab" data-video="static/videos/push_sit_carry.mp4" data-label="Combination: push → sit → carry (2.5x speed)">Push → sit → carry</button>
     </div>
-    <div class="demo-main-video-wrap">
+    <div class="demo-main-video-wrap reveal">
       <video id="demo-video-longhorizon" controls muted loop playsinline preload="none">
         <source data-src="static/videos/sit_push.mp4" type="video/mp4">
       </video>
@@ -481,8 +481,8 @@
 <!-- 4. Mocap & depth: Dual perception inputs -->
 <section class="section demo-section hero is-small" id="perception-section">
   <div class="container is-max-desktop">
-    <h2 class="title is-3 has-text-centered demo-title section-heading">4. Mocap and Depth Input as Perception <a href="#perception-section" class="heading-anchor" aria-label="Link to this section">#</a></h2>
-    <p class="has-text-centered demo-desc">
+    <h2 class="title is-3 has-text-centered demo-title section-heading reveal">4. Mocap and Depth Input as Perception <a href="#perception-section" class="heading-anchor" aria-label="Link to this section">#</a></h2>
+    <p class="has-text-centered demo-desc reveal">
       Our method runs with either motion-capture object state or egocentric depth only—enabling deployment with or without external tracking.
     </p>
     <div class="demo-tabs" id="demo-tabs-perception" role="tablist">
@@ -492,7 +492,7 @@
       <button type="button" class="demo-tab" data-mocap="static/videos/sit_stand.mp4" data-depth="static/videos/sit_vision.mp4" data-label="Sit & stand">Sit & stand</button>
       <button type="button" class="demo-tab" data-mocap="static/videos/carry_box.mp4" data-depth="static/videos/carry_box_vision.mp4" data-label="Carry">Carry</button>
     </div>
-    <div class="demo-side-by-side">
+    <div class="demo-side-by-side reveal">
       <div class="demo-video-cell">
         <video id="demo-video-mocap" controls muted loop playsinline preload="none">
           <source data-src="static/videos/pick_box.mp4" type="video/mp4">
@@ -544,7 +544,7 @@
       <p class="has-text-centered is-size-7 vision-only-caption">Long-horizon completion: push + pick (vision). Right: egocentric depth perception.</p>
     </div>
 
-    <div class="demo-multi-video-wrap">
+    <div class="demo-multi-video-wrap reveal--fade">
       <div class="demo-video-grid-three demo-foam-grid">
         <div class="demo-video-cell">
           <span class="angle-chip">Angle 1</span>
@@ -578,8 +578,8 @@
 <!-- Quantitative results -->
 <section class="section hero is-light stats-section" id="results-section">
   <div class="container is-max-desktop">
-    <h2 class="title is-3 has-text-centered section-heading">Quantitative Results at a Glance <a href="#results-section" class="heading-anchor" aria-label="Link to this section">#</a></h2>
-    <p class="has-text-centered demo-desc">
+    <h2 class="title is-3 has-text-centered section-heading reveal">Quantitative Results at a Glance <a href="#results-section" class="heading-anchor" aria-label="Link to this section">#</a></h2>
+    <p class="has-text-centered demo-desc reveal">
       Visual summaries: simulation scale generalization, long-horizon completion, and real-world deployment.
     </p>
 
@@ -745,8 +745,8 @@
   <div class="container is-max-desktop">
     <div class="columns is-centered has-text-centered">
       <div class="column is-four-fifths">
-        <h2 class="title is-3 section-heading">Abstract <a href="#abstract-section" class="heading-anchor" aria-label="Link to this section">#</a></h2>
-        <div class="content has-text-justified">
+        <h2 class="title is-3 section-heading reveal">Abstract <a href="#abstract-section" class="heading-anchor" aria-label="Link to this section">#</a></h2>
+        <div class="content has-text-justified reveal">
           <p>
             Enabling humanoid robots to operate autonomously in persistent, long-horizon interactions with unstructured environments remains an open challenge. Existing approaches often depend on detailed reference motions, task-specific reward design, or complex multi-stage pipelines, limiting their adaptability to environmental variations and hindering broad generalization across objects with diverse shapes and scales. We introduce <strong>DF-ACT</strong>, a reference-free framework that leverages <strong>Distance Field (DF)</strong> as a unified interaction representation, enabling generalizable and long-horizon humanoid interaction. The robot operates directly on the DF to extract dense, directional geometric cues, allowing fast adaptation to object contours without assumptions on object geometry. At inference time, DF-ACT requires only a target root trajectory: actions are continuously conditioned on local geometry rather than predefined motion references, which enables smooth transitions across interaction modes. As a result, a single policy learned within DF-ACT can execute long-horizon tasks by composing interaction skills such as picking up, sitting, pushing, and carrying over time, while naturally supporting online correction and recovery from interaction failures through continuous geometric feedback. Across diverse interaction tasks (PickUp, SitStand, Push, and Carry) and object scales from 0.4× to 1.6×, DF-ACT achieves robust performance without motion references.
           </p>
