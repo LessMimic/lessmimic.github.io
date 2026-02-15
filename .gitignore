@@ -1,5 +1,8 @@
 # Build output (rebuilt by CI)
 static/humanoid-policy-viewer/
 
+# Original videos (pre-reencoding backup)
+static/videos/_originals/
+
 # OS files
 .DS_Store

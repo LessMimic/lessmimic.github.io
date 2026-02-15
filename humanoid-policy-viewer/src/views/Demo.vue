@@ -1,5 +1,26 @@
 <template>
   <div id="mujoco-container"></div>
+  <transition name="shortcut-fade">
+    <div v-if="showShortcuts" class="shortcut-overlay" @click="showShortcuts = false">
+      <div class="shortcut-card" @click.stop>
+        <div class="shortcut-title">Keyboard Shortcuts</div>
+        <div class="shortcut-grid">
+          <kbd>W</kbd><span>Forward</span>
+          <kbd>S</kbd><span>Back</span>
+          <kbd>A</kbd><span>Left</span>
+          <kbd>D</kbd><span>Right</span>
+          <kbd>Q</kbd><span>Turn left</span>
+          <kbd>E</kbd><span>Turn right</span>
+          <kbd>1</kbd><span>No task</span>
+          <kbd>2</kbd><span>Carry</span>
+          <kbd>3</kbd><span>Push</span>
+          <kbd>Bksp</kbd><span>Reset</span>
+          <kbd>H</kbd><span>This help</span>
+        </div>
+        <div class="shortcut-dismiss">Click anywhere or press <kbd>H</kbd> to dismiss</div>
+      </div>
+    </div>
+  </transition>
   <div class="global-alerts">
     <v-alert
       v-if="isSmallScreen"
@@ -162,16 +183,21 @@
           </div>
         </div>
 
-        <v-checkbox
-          v-if="sectionObject"
-          v-model="sdfVisEnabled"
-          label="Visualize SDF"
-          density="compact"
-          hide-details
-          class="mt-1 sdf-vis-checkbox"
-          :disabled="state !== 1"
-          @update:modelValue="onSdfVisToggle"
-        ></v-checkbox>
+        <v-tooltip location="bottom" text="Red arrows show the distance field gradient the policy uses to sense nearby objects.">
+          <template v-slot:activator="{ props }">
+            <v-checkbox
+              v-if="sectionObject"
+              v-bind="props"
+              v-model="sdfVisEnabled"
+              label="Visualize SDF"
+              density="compact"
+              hide-details
+              class="mt-1 sdf-vis-checkbox"
+              :disabled="state !== 1"
+              @update:modelValue="onSdfVisToggle"
+            ></v-checkbox>
+          </template>
+        </v-tooltip>
 
         <v-divider class="my-2"/>
         <div class="section-header" @click="sectionSettings = !sectionSettings">
@@ -285,6 +311,7 @@ export default {
     sectionSettings: false,
     cameraFollowEnabled: true,
     sdfVisEnabled: true,
+    showShortcuts: false,
     sdfResolution: 32,
     renderScale: 2.0,
     simStepHz: 0,
@@ -345,6 +372,11 @@ export default {
         this.startTrackingPoll();
         this.renderScale = this.demo.renderScale ?? this.renderScale;
         this.state = 1;
+        // Signal parent page that the viewer is ready (dismisses loading overlay)
+        try { window.parent.postMessage({ type: 'df-act-ready' }, '*'); } catch (e) {}
+        // Show shortcut overlay briefly on first load
+        this.showShortcuts = true;
+        setTimeout(() => { this.showShortcuts = false; }, 4000);
       } catch (error) {
         this.state = -1;
         this.extra_error_message = error.toString();
@@ -599,6 +631,11 @@ export default {
         return;
       }
       const key = event.key.toLowerCase();
+      // Toggle shortcut overlay
+      if (key === 'h' || key === '?') {
+        this.showShortcuts = !this.showShortcuts;
+        return;
+      }
       // Task condition shortcuts
       switch (key) {
         case '1': this.setTaskCondition(0); return;
@@ -847,5 +884,84 @@ export default {
 .motion-progress-no-animation :deep(.v-progress-linear__background) {
   transition: none !important;
   animation: none !important;
+}
+
+/* Keyboard shortcut overlay */
+.shortcut-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.55);
+}
+
+.shortcut-card {
+  background: rgba(30, 41, 59, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 20px 28px;
+  color: #e2e8f0;
+  max-width: 320px;
+  backdrop-filter: blur(8px);
+}
+
+.shortcut-title {
+  font-weight: 700;
+  font-size: 1rem;
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+.shortcut-grid {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 6px 14px;
+  align-items: center;
+}
+
+.shortcut-grid kbd {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  font-family: monospace;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-align: center;
+  min-width: 32px;
+}
+
+.shortcut-grid span {
+  font-size: 0.82rem;
+  color: #94a3b8;
+}
+
+.shortcut-dismiss {
+  margin-top: 12px;
+  text-align: center;
+  font-size: 0.72rem;
+  color: #64748b;
+}
+
+.shortcut-dismiss kbd {
+  padding: 1px 5px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  font-family: monospace;
+  font-size: 0.7rem;
+}
+
+.shortcut-fade-enter-active,
+.shortcut-fade-leave-active {
+  transition: opacity 0.25s ease;
+}
+
+.shortcut-fade-enter-from,
+.shortcut-fade-leave-to {
+  opacity: 0;
 }
 </style>

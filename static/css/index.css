@@ -1800,16 +1800,100 @@ a:focus,
 .stats-section .dot-physhsi { background: #10b981; }
 .stats-section .dot-visualmimic { background: #f59e0b; }
 
+/* "Coming soon" hero buttons — subdued instead of disabled-grey */
+.button.is-dark.is-coming-soon {
+  background: rgba(148, 163, 184, 0.35) !important;
+  color: rgba(248, 250, 252, 0.6) !important;
+  cursor: default;
+  box-shadow: none;
+  transform: none !important;
+  pointer-events: none;
+}
+
+/* Section heading anchor links */
+.heading-anchor {
+  opacity: 0;
+  color: var(--text-light);
+  text-decoration: none;
+  font-weight: 400;
+  font-size: 0.75em;
+  margin-left: 0.25em;
+  transition: opacity 0.15s ease;
+  vertical-align: middle;
+}
+
+.section-heading:hover .heading-anchor,
+.heading-anchor:focus {
+  opacity: 0.5;
+}
+
+.heading-anchor:hover {
+  opacity: 1;
+  color: var(--primary-color);
+}
+
+/* MuJoCo loading overlay */
+.mujoco-loading-overlay[hidden] {
+  display: none !important;
+}
+
+.mujoco-loading-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  background: radial-gradient(circle at center, rgba(30, 64, 175, 0.25) 0%, rgba(15, 23, 42, 0.92) 55%), #0f172a;
+  color: #e2e8f0;
+  font-size: 0.95rem;
+}
+
+.mujoco-loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(255, 255, 255, 0.15);
+  border-top-color: var(--primary-color);
+  border-radius: 50%;
+  animation: mujoco-spin 0.8s linear infinite;
+}
+
+@keyframes mujoco-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .hero-main-video {
+    display: none;
+  }
+
+  .mujoco-loading-spinner {
+    animation: none;
+    border-top-color: transparent;
+    border-right-color: var(--primary-color);
+  }
+}
+
 /* Print styles */
 @media print {
   .more-works-container {
     display: none;
   }
-  
+
   .hero, .section {
     animation: none;
   }
-  
+
   .button {
     background: transparent !important;
     color: var(--text-primary) !important;

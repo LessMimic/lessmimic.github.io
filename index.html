@@ -160,22 +160,6 @@
           </div>
           <i class="fas fa-external-link-alt"></i>
         </a>
-        <div class="work-item work-item-placeholder" aria-disabled="true">
-          <div class="work-info">
-            <h5>Incoming Project 1</h5>
-            <p>A related lab project will be announced soon.</p>
-            <span class="work-venue">Coming Soon</span>
-          </div>
-          <i class="fas fa-hourglass-half"></i>
-        </div>
-        <div class="work-item work-item-placeholder" aria-disabled="true">
-          <div class="work-info">
-            <h5>Incoming Project 2</h5>
-            <p>Another related project page will be added here.</p>
-            <span class="work-venue">Coming Soon</span>
-          </div>
-          <i class="fas fa-hourglass-half"></i>
-        </div>
       </div>
     </div>
   </div>
@@ -247,16 +231,16 @@
                   </a>
                 </span>
                 <span class="link-block">
-                  <button type="button" title="Code link will be added when available" class="external-link button is-normal is-rounded is-dark is-disabled" aria-disabled="true" disabled>
+                  <span class="external-link button is-normal is-rounded is-dark is-coming-soon" title="Code link will be added when available">
                     <span class="icon"><i class="fab fa-github"></i></span>
                     <span>Code (Soon)</span>
-                  </button>
+                  </span>
                 </span>
                 <span class="link-block">
-                  <button type="button" title="arXiv link will be added when available" class="external-link button is-normal is-rounded is-dark is-disabled" aria-disabled="true" disabled>
+                  <span class="external-link button is-normal is-rounded is-dark is-coming-soon" title="arXiv link will be added when available">
                     <span class="icon"><i class="ai ai-arxiv"></i></span>
                     <span>arXiv (Soon)</span>
-                  </button>
+                  </span>
                 </span>
                 <span class="link-block">
                   <a href="#abstract-section" class="external-link button is-normal is-rounded is-dark">
@@ -281,7 +265,7 @@
 <!-- Key contributions: hover-highlight cards -->
 <section class="section hero is-light contributions-section" id="contributions-section">
   <div class="container is-max-desktop">
-    <h2 class="title is-3 has-text-centered">Key Contributions</h2>
+    <h2 class="title is-3 has-text-centered section-heading" id="contributions">Key Contributions <a href="#contributions-section" class="heading-anchor" aria-label="Link to this section">#</a></h2>
     <div class="contributions-grid">
       <div class="contribution-card pop-left">
         <h3 class="contribution-card-title">Generalize across objects</h3>
@@ -341,8 +325,8 @@
           <div class="demo-video-cell">
             <div class="how-video-title">DF Visualization: Pick</div>
             <div class="how-video-frame">
-              <video autoplay controls muted loop playsinline preload="metadata">
-                <source src="static/videos/sim_pick_normal.mp4" type="video/mp4">
+              <video controls muted loop playsinline preload="none">
+                <source data-src="static/videos/sim_pick_normal.mp4" type="video/mp4">
               </video>
             </div>
             <div class="demo-video-label">DF visualization for the pick skill</div>
@@ -350,8 +334,8 @@
           <div class="demo-video-cell">
             <div class="how-video-title">DF Visualization: Push</div>
             <div class="how-video-frame">
-              <video autoplay controls muted loop playsinline preload="metadata">
-                <source src="static/videos/sim_push_normal.mp4" type="video/mp4">
+              <video controls muted loop playsinline preload="none">
+                <source data-src="static/videos/sim_push_normal.mp4" type="video/mp4">
               </video>
             </div>
             <div class="demo-video-label">DF visualization for the push skill</div>
@@ -359,8 +343,8 @@
           <div class="demo-video-cell">
             <div class="how-video-title">DF Visualization: Sit</div>
             <div class="how-video-frame">
-              <video autoplay controls muted loop playsinline preload="metadata">
-                <source src="static/videos/sim_sit_normal.mp4" type="video/mp4">
+              <video controls muted loop playsinline preload="none">
+                <source data-src="static/videos/sim_sit_normal.mp4" type="video/mp4">
               </video>
             </div>
             <div class="demo-video-label">DF visualization for the sit skill</div>
@@ -371,8 +355,8 @@
           <div class="demo-video-cell">
             <div class="how-video-title">Scale Generalization in Simulation</div>
             <div class="how-video-frame">
-              <video autoplay controls muted loop playsinline preload="metadata">
-                <source src="static/videos/sim_pick_scale.mp4" type="video/mp4">
+              <video controls muted loop playsinline preload="none">
+                <source data-src="static/videos/sim_pick_scale.mp4" type="video/mp4">
               </video>
             </div>
             <div class="demo-video-label">Pick objects at different scales with distance-field visualization</div>
@@ -397,6 +381,10 @@
           Start Live MuJoCo Session
         </button>
       </div>
+      <div class="mujoco-loading-overlay" id="mujoco-loading-overlay" hidden>
+        <div class="mujoco-loading-spinner"></div>
+        <p>Loading MuJoCo WASM + ONNX policy&hellip;</p>
+      </div>
       <iframe
         id="mujoco-session-frame"
         data-src="static/humanoid-policy-viewer/"
@@ -416,16 +404,19 @@
       <br>Note: The objects' DF is discretized and cached, so the policy's performance is slightly degraded. To report issues, please contact <a href="mailto:yutang.lin@stu.pku.edu.cn">yutang.lin@stu.pku.edu.cn</a>.
       <br><b>Please use Google Chrome for best performance.</b>
     </p>
-    <p class="has-text-centered is-size-7 mujoco-session-disabled-note" id="mujoco-session-disabled-note" hidden>
-      Live MuJoCo session is disabled on phones. Please use a desktop, laptop, or tablet.
-    </p>
+    <div class="mujoco-session-disabled-note" id="mujoco-session-disabled-note" hidden>
+      <div class="notification is-warning is-light has-text-centered">
+        <i class="fas fa-desktop" style="margin-right: 0.4em;"></i>
+        The live MuJoCo session is only available on desktop.
+      </div>
+    </div>
   </div>
 </section>
 
 <!-- 1. Generalization: Interact with various objects -->
 <section class="section demo-section hero is-small" id="generalization-section">
   <div class="container is-max-desktop">
-    <h2 class="title is-3 has-text-centered demo-title">1. Interact with Various Objects</h2>
+    <h2 class="title is-3 has-text-centered demo-title section-heading">1. Interact with Various Objects <a href="#generalization-section" class="heading-anchor" aria-label="Link to this section">#</a></h2>
     <p class="has-text-centered demo-desc">
       One policy generalizes across object shapes and sizes—box, foam cylinder, and ball.
       <br>*The foam cylinder and soccer ball are not in training data.
@@ -439,8 +430,8 @@
       <button type="button" class="demo-tab" data-video="static/videos/push.mp4" data-label="Push chest">Push chest</button>
     </div>
     <div class="demo-main-video-wrap">
-      <video id="demo-video-generalization" autoplay controls muted loop playsinline preload="metadata">
-        <source src="static/videos/pick_box.mp4" type="video/mp4">
+      <video id="demo-video-generalization" controls muted loop playsinline preload="none">
+        <source data-src="static/videos/pick_box.mp4" type="video/mp4">
       </video>
       <div class="demo-video-label" id="demo-label-generalization">Pick up: box</div>
     </div>
@@ -450,7 +441,7 @@
 <!-- 2. Recovery from disturbance/failure -->
 <section class="section demo-section hero is-small is-light" id="recovery-section">
   <div class="container is-max-desktop">
-    <h2 class="title is-3 has-text-centered demo-title">2. Autonomously Recover from Disturbance/Failure</h2>
+    <h2 class="title is-3 has-text-centered demo-title section-heading">2. Autonomously Recover from Disturbance/Failure <a href="#recovery-section" class="heading-anchor" aria-label="Link to this section">#</a></h2>
     <p class="has-text-centered demo-desc">
       After external disturbance or failed pickup attempts, the policy re-initiates interaction and recovers autonomously using continuous geometric feedback.
     </p>
@@ -460,8 +451,8 @@
       <button type="button" class="demo-tab" data-video="static/videos/recover_soccer.mp4" data-label="Recovery: soccer after slipperiness">Recover (soccer)</button>
     </div>
     <div class="demo-main-video-wrap">
-      <video id="demo-video-recovery" autoplay controls muted loop playsinline preload="metadata">
-        <source src="static/videos/recover_box.mp4" type="video/mp4">
+      <video id="demo-video-recovery" controls muted loop playsinline preload="none">
+        <source data-src="static/videos/recover_box.mp4" type="video/mp4">
       </video>
       <div class="demo-video-label" id="demo-label-recovery">Recovery: box after slipperiness</div>
     </div>
@@ -471,7 +462,7 @@
 <!-- 3. Long-horizon: Consequent multi-skill tasks -->
 <section class="section demo-section hero is-small" id="longhorizon-section">
   <div class="container is-max-desktop">
-    <h2 class="title is-3 has-text-centered demo-title">3. Execute Consequent Long-Horizon Tasks</h2>
+    <h2 class="title is-3 has-text-centered demo-title section-heading">3. Execute Consequent Long-Horizon Tasks <a href="#longhorizon-section" class="heading-anchor" aria-label="Link to this section">#</a></h2>
     <p class="has-text-centered demo-desc">
       A single policy composes multiple skills in sequence over extended horizons, showing smooth transitions between interaction modes.
     </p>
@@ -480,8 +471,8 @@
       <button type="button" class="demo-tab" data-video="static/videos/push_sit_carry.mp4" data-label="Combination: push → sit → carry (2.5x speed)">Push → sit → carry</button>
     </div>
     <div class="demo-main-video-wrap">
-      <video id="demo-video-longhorizon" autoplay controls muted loop playsinline preload="metadata">
-        <source src="static/videos/sit_push.mp4" type="video/mp4">
+      <video id="demo-video-longhorizon" controls muted loop playsinline preload="none">
+        <source data-src="static/videos/sit_push.mp4" type="video/mp4">
       </video>
       <div class="demo-video-label" id="demo-label-longhorizon">Combination: sit → push (2x speed)</div>
     </div>
@@ -491,7 +482,7 @@
 <!-- 4. Mocap & depth: Dual perception inputs -->
 <section class="section demo-section hero is-small" id="perception-section">
   <div class="container is-max-desktop">
-    <h2 class="title is-3 has-text-centered demo-title">4. Mocap and Depth Input as Perception</h2>
+    <h2 class="title is-3 has-text-centered demo-title section-heading">4. Mocap and Depth Input as Perception <a href="#perception-section" class="heading-anchor" aria-label="Link to this section">#</a></h2>
     <p class="has-text-centered demo-desc">
       Our method runs with either motion-capture object state or egocentric depth only—enabling deployment with or without external tracking.
     </p>
@@ -504,14 +495,14 @@
     </div>
     <div class="demo-side-by-side">
       <div class="demo-video-cell">
-        <video id="demo-video-mocap" autoplay controls muted loop playsinline preload="metadata">
-          <source src="static/videos/pick_box.mp4" type="video/mp4">
+        <video id="demo-video-mocap" controls muted loop playsinline preload="none">
+          <source data-src="static/videos/pick_box.mp4" type="video/mp4">
         </video>
         <div class="demo-video-label">Mocap</div>
       </div>
       <div class="demo-video-cell">
-        <video id="demo-video-depth" autoplay controls muted loop playsinline preload="metadata">
-          <source src="static/videos/pick_box_vision.mp4" type="video/mp4">
+        <video id="demo-video-depth" controls muted loop playsinline preload="none">
+          <source data-src="static/videos/pick_box_vision.mp4" type="video/mp4">
         </video>
         <div class="demo-video-label">Egocentric depth</div>
       </div>
@@ -523,14 +514,14 @@
 
       <div class="demo-side-by-side vision-only-row">
         <div class="demo-video-cell">
-          <video autoplay controls muted loop playsinline preload="metadata">
-            <source src="static/videos/push_chest_yixuan_vision.mp4" type="video/mp4">
+          <video controls muted loop playsinline preload="none">
+            <source data-src="static/videos/push_chest_yixuan_vision.mp4" type="video/mp4">
           </video>
           <div class="demo-video-label">Push chest + chair (vision 2x speed)</div>
         </div>
         <div class="demo-video-cell">
-          <video autoplay controls muted loop playsinline preload="metadata">
-            <source src="static/videos/push_yixuan_vision.mp4" type="video/mp4">
+          <video controls muted loop playsinline preload="none">
+            <source data-src="static/videos/push_yixuan_vision.mp4" type="video/mp4">
           </video>
           <div class="demo-video-label">Push chair (vision)</div>
         </div>
@@ -539,14 +530,14 @@
 
       <div class="demo-side-by-side vision-only-row">
         <div class="demo-video-cell">
-          <video autoplay controls muted loop playsinline preload="metadata">
-            <source src="static/videos/push_pick_vision.mp4" type="video/mp4">
+          <video controls muted loop playsinline preload="none">
+            <source data-src="static/videos/push_pick_vision.mp4" type="video/mp4">
           </video>
           <div class="demo-video-label">Push + pick (vision 2x speed)</div>
         </div>
         <div class="demo-video-cell">
-          <video autoplay controls muted loop playsinline preload="metadata">
-            <source src="static/videos/push_pick_vision_ego_depth.mp4" type="video/mp4">
+          <video controls muted loop playsinline preload="none">
+            <source data-src="static/videos/push_pick_vision_ego_depth.mp4" type="video/mp4">
           </video>
           <div class="demo-video-label">Push + pick (ego depth 2x speed)</div>
         </div>
@@ -558,20 +549,20 @@
       <div class="demo-video-grid-three demo-foam-grid">
         <div class="demo-video-cell">
           <span class="angle-chip">Angle 1</span>
-          <video autoplay controls muted loop playsinline preload="metadata">
-            <source src="static/videos/pick_foam_vision_1.mp4" type="video/mp4">
+          <video controls muted loop playsinline preload="none">
+            <source data-src="static/videos/pick_foam_vision_1.mp4" type="video/mp4">
           </video>
         </div>
         <div class="demo-video-cell">
           <span class="angle-chip">Angle 2</span>
-          <video autoplay controls muted loop playsinline preload="metadata">
-            <source src="static/videos/pick_foam_vision_2.mp4" type="video/mp4">
+          <video controls muted loop playsinline preload="none">
+            <source data-src="static/videos/pick_foam_vision_2.mp4" type="video/mp4">
           </video>
         </div>
         <div class="demo-video-cell">
           <span class="angle-chip">Angle 3</span>
-          <video autoplay controls muted loop playsinline preload="metadata">
-            <source src="static/videos/pick_foam_vision_3.mp4" type="video/mp4">
+          <video controls muted loop playsinline preload="none">
+            <source data-src="static/videos/pick_foam_vision_3.mp4" type="video/mp4">
           </video>
         </div>
       </div>
@@ -588,7 +579,7 @@
 <!-- Quantitative results -->
 <section class="section hero is-light stats-section" id="results-section">
   <div class="container is-max-desktop">
-    <h2 class="title is-3 has-text-centered">Quantitative Results at a Glance</h2>
+    <h2 class="title is-3 has-text-centered section-heading">Quantitative Results at a Glance <a href="#results-section" class="heading-anchor" aria-label="Link to this section">#</a></h2>
     <p class="has-text-centered demo-desc">
       Visual summaries: simulation scale generalization, long-horizon completion, and real-world deployment.
     </p>
@@ -755,7 +746,7 @@
   <div class="container is-max-desktop">
     <div class="columns is-centered has-text-centered">
       <div class="column is-four-fifths">
-        <h2 class="title is-3">Abstract</h2>
+        <h2 class="title is-3 section-heading">Abstract <a href="#abstract-section" class="heading-anchor" aria-label="Link to this section">#</a></h2>
         <div class="content has-text-justified">
           <p>
             Enabling humanoid robots to operate autonomously in persistent, long-horizon interactions with unstructured environments remains an open challenge. Existing approaches often depend on detailed reference motions, task-specific reward design, or complex multi-stage pipelines, limiting their adaptability to environmental variations and hindering broad generalization across objects with diverse shapes and scales. We introduce <strong>DF-ACT</strong>, a reference-free framework that leverages <strong>Distance Field (DF)</strong> as a unified interaction representation, enabling generalizable and long-horizon humanoid interaction. The robot operates directly on the DF to extract dense, directional geometric cues, allowing fast adaptation to object contours without assumptions on object geometry. At inference time, DF-ACT requires only a target root trajectory: actions are continuously conditioned on local geometry rather than predefined motion references, which enables smooth transitions across interaction modes. As a result, a single policy learned within DF-ACT can execute long-horizon tasks by composing interaction skills such as picking up, sitting, pushing, and carrying over time, while naturally supporting online correction and recovery from interaction failures through continuous geometric feedback. Across diverse interaction tasks (PickUp, SitStand, Push, and Carry) and object scales from 0.4× to 1.6×, DF-ACT achieves robust performance without motion references.
@@ -773,6 +764,9 @@
     <div class="container">
       <h2 class="title">Paper (PDF)</h2>
       <iframe src="static/pdfs/RSS26_DF_Act.pdf" width="100%" height="550" title="DF-ACT Paper PDF"></iframe>
+      <p class="has-text-centered is-size-7" style="margin-top: 0.5rem; color: var(--text-secondary);">
+        If the PDF does not display, <a href="static/pdfs/RSS26_DF_Act.pdf" download>download it directly</a>.
+      </p>
     </div>
   </div>
 </section>
@@ -824,5 +818,12 @@
 
     <!-- End of Statcounter Code -->
 
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function() {
+        navigator.serviceWorker.register('sw.js').catch(function() {});
+      });
+    }
+  </script>
   </body>
   </html>

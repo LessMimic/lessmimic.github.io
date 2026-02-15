@@ -1,5 +1,12 @@
 window.HELP_IMPROVE_VIDEOJS = false;
 
+// Lightweight analytics helper (uses existing GA4 gtag if present)
+function trackEvent(action, label, value) {
+    if (typeof gtag === 'function') {
+        gtag('event', action, { event_label: label, value: value });
+    }
+}
+
 // More Works Dropdown Functionality
 function toggleMoreWorks() {
     const dropdown = document.getElementById('moreWorksDropdown');
@@ -129,20 +136,60 @@ function setupVideoCarouselAutoplay() {
     });
 }
 
-function autoplayDemoVideos() {
+// Lazy-load video: move data-src → src and begin playback
+function activateVideo(video) {
+    if (video.dataset.lazyActivated) return;
+    var source = video.querySelector('source[data-src]');
+    if (source) {
+        source.src = source.getAttribute('data-src');
+        source.removeAttribute('data-src');
+        video.load();
+    }
+    video.muted = true;
+    video.dataset.lazyActivated = '1';
+    video.addEventListener('loadeddata', function() {
+        video.play().catch(function() {});
+    }, { once: true });
+}
+
+var lazyVideoObserver = null;
+
+function setupLazyVideos() {
     var videos = document.querySelectorAll('.how-section video, .demo-section video');
+    if (!videos.length) return;
+
+    if (!('IntersectionObserver' in window)) {
+        // Fallback: activate all immediately
+        videos.forEach(activateVideo);
+        return;
+    }
+
+    lazyVideoObserver = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+            var video = entry.target;
+            if (entry.isIntersecting) {
+                activateVideo(video);
+                video.play().catch(function() {});
+            } else if (video.dataset.lazyActivated) {
+                video.pause();
+            }
+        });
+    }, { rootMargin: '200px', threshold: 0.1 });
+
     videos.forEach(function(video) {
-        video.muted = true;
-        video.autoplay = true;
-        var tryPlay = function() {
-            video.play().catch(function() {});
-        };
-        if (video.readyState >= 2) {
-            tryPlay();
-        } else {
-            video.addEventListener('loadeddata', tryPlay, { once: true });
-        }
+        lazyVideoObserver.observe(video);
     });
+}
+
+// Legacy name kept for resumeAllVideos compatibility
+function autoplayDemoVideos() {
+    if (lazyVideoObserver) {
+        document.querySelectorAll('.how-section video, .demo-section video').forEach(function(video) {
+            lazyVideoObserver.observe(video);
+        });
+    } else {
+        setupLazyVideos();
+    }
 }
 
 function setVideoSource(videoElement, sourceUrl) {
@@ -166,7 +213,9 @@ function setVideoSource(videoElement, sourceUrl) {
         sourceEl.type = 'video/mp4';
         videoElement.appendChild(sourceEl);
     }
+    sourceEl.removeAttribute('data-src');
     sourceEl.src = sourceUrl;
+    videoElement.dataset.lazyActivated = '1';
     videoElement.load();
 
     // Once the new video has a frame, clear the poster so it doesn't
@@ -204,6 +253,7 @@ function setupSingleVideoTabs(containerId, videoId, labelId) {
             if (label) {
                 labelEl.textContent = label;
             }
+            trackEvent('demo_tab_switch', containerId + ':' + (label || src));
         });
     });
 }
@@ -224,6 +274,7 @@ function setupDualVideoTabs(containerId, videoAId, videoBId) {
             setVideoSource(videoB, sourceB);
             videoA.play().catch(function() {});
             videoB.play().catch(function() {});
+            trackEvent('demo_tab_switch', containerId + ':' + button.textContent.trim());
         });
     });
 }
@@ -303,9 +354,9 @@ function setupContributionCards() {
 function pauseAllVideos() {
     document.querySelectorAll('video').forEach(function(v) {
         v.pause();
-        v.autoplay = false;
     });
     if (carouselObserver) carouselObserver.disconnect();
+    if (lazyVideoObserver) lazyVideoObserver.disconnect();
 }
 
 function resumeAllVideos() {
@@ -315,7 +366,12 @@ function resumeAllVideos() {
             carouselObserver.observe(video);
         });
     }
-    autoplayDemoVideos();
+    // Re-observe lazy videos
+    if (lazyVideoObserver) {
+        document.querySelectorAll('.how-section video, .demo-section video').forEach(function(video) {
+            lazyVideoObserver.observe(video);
+        });
+    }
 }
 
 function setupMujocoSessionLauncher() {
@@ -338,11 +394,16 @@ function setupMujocoSessionLauncher() {
         return;
     }
 
+    var loadingOverlay = document.getElementById('mujoco-loading-overlay');
+
     startButton.addEventListener('click', function() {
         var iframeSrc = iframe.getAttribute('data-src');
         if (!iframeSrc) return;
 
         pauseAllVideos();
+
+        // Show loading overlay
+        if (loadingOverlay) loadingOverlay.hidden = false;
 
         iframe.src = iframeSrc;
         frameWrap.classList.add('is-started');
@@ -350,6 +411,18 @@ function setupMujocoSessionLauncher() {
         startButton.setAttribute('aria-disabled', 'true');
         startButton.textContent = 'Session Running';
         if (closeButton) closeButton.hidden = false;
+
+        // Hide overlay once iframe signals ready or after timeout
+        function hideOverlay() { if (loadingOverlay) loadingOverlay.hidden = true; }
+        window.addEventListener('message', function onReady(e) {
+            if (e.data && e.data.type === 'df-act-ready') {
+                window.removeEventListener('message', onReady);
+                hideOverlay();
+            }
+        });
+        setTimeout(hideOverlay, 30000); // fallback: hide after 30s max
+
+        trackEvent('mujoco_session', 'start');
     });
 
     if (closeButton) {
@@ -360,12 +433,14 @@ function setupMujocoSessionLauncher() {
             setTimeout(function() {
                 iframe.src = 'about:blank';
                 frameWrap.classList.remove('is-started');
+                if (loadingOverlay) loadingOverlay.hidden = true;
                 startButton.disabled = false;
                 startButton.removeAttribute('aria-disabled');
                 startButton.textContent = 'Start Live MuJoCo Session';
                 closeButton.hidden = true;
                 resumeAllVideos();
             }, 150);
+            trackEvent('mujoco_session', 'close');
         });
     }
 }
@@ -450,7 +525,7 @@ document.addEventListener('DOMContentLoaded', function() {
     setupContributionCards();
     setupMujocoSessionLauncher();
     setupOutlinePanel();
-    autoplayDemoVideos();
+    setupLazyVideos();
 
     // Non-critical enhancements are isolated so they cannot block button behavior.
     try {
