@@ -1633,11 +1633,46 @@ a:focus,
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12), 0 8px 16px rgba(0, 0, 0, 0.08);
   background: #0f0f0f;
   border: 1px solid var(--border-color);
+  position: relative;
 }
 .demo-main-video-wrap video {
   width: 100%;
   max-width: 100%;
   display: block;
+  transition: opacity 0.18s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.demo-main-video-wrap.is-switching video {
+  opacity: 0;
+  transform: scale(0.97);
+}
+.demo-main-video-wrap .demo-video-label {
+  transition: opacity 0.18s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.demo-main-video-wrap.is-switching .demo-video-label {
+  opacity: 0;
+  transform: translateY(6px);
+}
+/* Loading shimmer while new video source loads */
+.demo-main-video-wrap.is-loading::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: linear-gradient(
+    110deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.06) 50%,
+    transparent 70%
+  );
+  background-size: 200% 100%;
+  animation: videoSwitchShimmer 1.2s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes videoSwitchShimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 }
 .demo-main-video-wrap .demo-video-label {
   padding: 0.75rem 1.25rem;
@@ -1759,6 +1794,20 @@ a:focus,
   width: 100%;
   max-width: 100%;
   display: block;
+  transition: opacity 0.18s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.demo-side-by-side.is-switching .demo-video-cell video {
+  opacity: 0;
+  transform: scale(0.97);
+}
+.demo-side-by-side .demo-video-cell .demo-video-label {
+  transition: opacity 0.18s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.demo-side-by-side.is-switching .demo-video-cell .demo-video-label {
+  opacity: 0;
+  transform: translateY(6px);
 }
 .demo-side-by-side .demo-video-label {
   padding: 0.65rem 1rem;
@@ -2254,6 +2303,293 @@ a:focus,
     border-top-color: transparent;
     border-right-color: var(--primary-color);
   }
+}
+
+/* ══════════════════════════════════════════════════════════
+   FANCY VISUAL ENHANCEMENTS
+   ══════════════════════════════════════════════════════════ */
+
+/* ── 1. Animated Distance Field Rings in Hero ── */
+.hero-df-rings {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 70vmin;
+  height: 70vmin;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.df-ring {
+  fill: none;
+  stroke: rgba(96, 165, 250, 0.35);
+  stroke-width: 1.2;
+}
+
+.df-ring--1 {
+  animation: dfRingPulse 6s ease-in-out infinite;
+}
+
+.df-ring--2 {
+  stroke: rgba(96, 165, 250, 0.28);
+  animation: dfRingPulse 6s ease-in-out 1.5s infinite;
+}
+
+.df-ring--3 {
+  stroke: rgba(139, 92, 246, 0.22);
+  animation: dfRingPulse 6s ease-in-out 3s infinite;
+}
+
+.df-ring--4 {
+  stroke: rgba(139, 92, 246, 0.15);
+  animation: dfRingPulse 6s ease-in-out 4.5s infinite;
+}
+
+@keyframes dfRingPulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.08);
+    opacity: 0.5;
+  }
+}
+
+/* ── 2. Gradient Mesh Blobs ── */
+.hero.is-light.contributions-section::before,
+.hero.is-light.contributions-section::after {
+  width: 380px;
+  height: 380px;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.12;
+  pointer-events: none;
+  z-index: 0;
+  will-change: transform;
+}
+
+.hero.is-light.contributions-section::before {
+  top: 10%;
+  left: -5%;
+  background: #3b82f6;
+  animation: blobDrift1 22s ease-in-out infinite;
+}
+
+.hero.is-light.contributions-section::after {
+  bottom: 10%;
+  right: -5%;
+  background: #8b5cf6;
+  animation: blobDrift2 25s ease-in-out infinite;
+}
+
+.hero.is-light.stats-section::before,
+.hero.is-light.stats-section::after {
+  width: 350px;
+  height: 350px;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.13;
+  pointer-events: none;
+  z-index: 0;
+  will-change: transform;
+}
+
+.hero.is-light.stats-section::before {
+  top: 15%;
+  right: -3%;
+  background: #3b82f6;
+  animation: blobDrift2 20s ease-in-out infinite;
+}
+
+.hero.is-light.stats-section::after {
+  bottom: 5%;
+  left: -3%;
+  background: #ec4899;
+  animation: blobDrift1 24s ease-in-out infinite;
+}
+
+@keyframes blobDrift1 {
+  0%, 100% { transform: translate(0, 0); }
+  33% { transform: translate(30px, -20px); }
+  66% { transform: translate(-20px, 15px); }
+}
+
+@keyframes blobDrift2 {
+  0%, 100% { transform: translate(0, 0); }
+  33% { transform: translate(-25px, 20px); }
+  66% { transform: translate(20px, -25px); }
+}
+
+/* ── 3. Animated Gradient Text on DF-ACT Title ── */
+.hero-main .publication-title .title-main {
+  background: linear-gradient(135deg, #60a5fa, #a78bfa, #f472b6, #60a5fa);
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradientTextShift 6s ease-in-out infinite;
+}
+
+@keyframes gradientTextShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* ── 4. Contribution Cards 3D Tilt ── */
+.contribution-card {
+  transform-style: preserve-3d;
+  transition: transform 0.15s ease, box-shadow 0.25s ease, border-color 0.2s ease, background 0.2s ease;
+}
+
+.contribution-card .card-tilt-highlight {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  background: radial-gradient(300px circle at var(--tilt-x, 50%) var(--tilt-y, 50%), rgba(37, 99, 235, 0.1), transparent 60%);
+}
+
+.contribution-card:hover .card-tilt-highlight {
+  opacity: 1;
+}
+
+/* ── 5. Animated Gradient Border on Stats Cards ── */
+@property --border-angle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+
+.stats-section .stats-card {
+  position: relative;
+  background: #ffffff;
+  z-index: 1;
+}
+
+.stats-section .stats-card::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 16px;
+  background: conic-gradient(from var(--border-angle), #2563eb, #0ea5e9, #8b5cf6, #f093fb, #2563eb);
+  z-index: -1;
+  animation: rotateBorder 4s linear infinite;
+}
+
+.stats-section .stats-card::after {
+  content: '';
+  position: absolute;
+  inset: 1px;
+  border-radius: 13px;
+  background: #ffffff;
+  z-index: -1;
+}
+
+@keyframes rotateBorder {
+  to { --border-angle: 360deg; }
+}
+
+/* ── 6. Contour Line SVG Section Dividers ── */
+.hero.is-light::before {
+  top: 0;
+  height: 40px;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 40'%3E%3Cpath d='M0 32 Q150 20 300 28 T600 24 T900 30 T1200 22' fill='none' stroke='%23cbd5e1' stroke-width='0.8' opacity='0.5'/%3E%3Cpath d='M0 20 Q200 10 400 18 T800 14 T1200 20' fill='none' stroke='%23cbd5e1' stroke-width='0.6' opacity='0.35'/%3E%3Cpath d='M0 8 Q180 16 360 10 T720 12 T1200 6' fill='none' stroke='%23cbd5e1' stroke-width='0.5' opacity='0.2'/%3E%3C/svg%3E") center top / 100% 40px no-repeat;
+}
+
+.hero.is-light::after {
+  bottom: 0;
+  height: 40px;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 40'%3E%3Cpath d='M0 8 Q150 20 300 12 T600 16 T900 10 T1200 18' fill='none' stroke='%23cbd5e1' stroke-width='0.8' opacity='0.5'/%3E%3Cpath d='M0 20 Q200 30 400 22 T800 26 T1200 20' fill='none' stroke='%23cbd5e1' stroke-width='0.6' opacity='0.35'/%3E%3Cpath d='M0 32 Q180 24 360 30 T720 28 T1200 34' fill='none' stroke='%23cbd5e1' stroke-width='0.5' opacity='0.2'/%3E%3C/svg%3E") center bottom / 100% 40px no-repeat;
+}
+
+/* ── 7. Mouse-Following Gradient Spotlight ── */
+@media (hover: hover) {
+  .hero-main {
+    --mouse-x: 50%;
+    --mouse-y: 50%;
+  }
+
+  .hero-main .hero-main-overlay {
+    background:
+      radial-gradient(600px circle at var(--mouse-x) var(--mouse-y), rgba(37, 99, 235, 0.12), transparent 60%),
+      linear-gradient(
+        to bottom,
+        rgba(2, 6, 23, 0.6) 0%,
+        rgba(2, 6, 23, 0.52) 45%,
+        rgba(2, 6, 23, 0.72) 100%
+      );
+  }
+}
+
+/* ── 8. Dot Grid Background Pattern ── */
+.hero.is-light {
+  background-image: radial-gradient(circle, #cbd5e1 1px, transparent 1px);
+  background-size: 24px 24px;
+  background-color: var(--background-secondary);
+}
+
+/* ── 9. Button Shimmer Effect ── */
+.hero-main .button.is-dark::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(110deg, transparent 25%, rgba(255, 255, 255, 0.35) 50%, transparent 75%);
+  transform: translateX(-100%);
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.hero-main .button.is-dark:hover::after {
+  transform: translateX(100%);
+  transition: transform 0.6s ease;
+}
+
+.hero-main .button.is-dark.is-coming-soon::after {
+  display: none;
+}
+
+/* ── 10. Video Container Glow Pulse ── */
+@keyframes videoGlow {
+  0%, 100% {
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12), 0 8px 16px rgba(0, 0, 0, 0.08), 0 0 20px rgba(37, 99, 235, 0.08);
+  }
+  50% {
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12), 0 8px 16px rgba(0, 0, 0, 0.08), 0 0 35px rgba(37, 99, 235, 0.18);
+  }
+}
+
+.demo-main-video-wrap.is-visible {
+  animation: videoGlow 4s ease-in-out infinite;
+}
+
+
+/* ── 11. DF Contour Canvas (Contributions) ── */
+.df-contour-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── 12. Cursor Trail Canvas ── */
+.cursor-trail-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 5;
 }
 
 /* Print styles */

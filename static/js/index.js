@@ -242,17 +242,54 @@ function setupSingleVideoTabs(containerId, videoId, labelId) {
     var labelEl = document.getElementById(labelId);
     if (!container || !video || !labelEl) return;
 
+    var wrap = video.closest('.demo-main-video-wrap');
+    var switching = false;
+
     container.querySelectorAll('.demo-tab').forEach(function(button) {
         button.addEventListener('click', function() {
             var src = button.getAttribute('data-video');
             var label = button.getAttribute('data-label');
             if (!src) return;
-            activateTab(container, button);
-            setVideoSource(video, src);
-            video.play().catch(function() {});
-            if (label) {
-                labelEl.textContent = label;
+
+            // Guard: skip if already switching or same source
+            var currentSrc = (video.querySelector('source') || {}).src || '';
+            if (switching || currentSrc === new URL(src, location.href).href) {
+                activateTab(container, button);
+                return;
             }
+
+            switching = true;
+            activateTab(container, button);
+
+            if (wrap) wrap.classList.add('is-switching');
+
+            // Wait for CSS fade-out, then swap source
+            setTimeout(function() {
+                setVideoSource(video, src);
+                if (label) labelEl.textContent = label;
+
+                if (wrap) wrap.classList.add('is-loading');
+
+                function reveal() {
+                    if (wrap) {
+                        wrap.classList.remove('is-switching');
+                        wrap.classList.remove('is-loading');
+                    }
+                    video.play().catch(function() {});
+                    switching = false;
+                }
+
+                video.addEventListener('loadeddata', function onLoaded() {
+                    video.removeEventListener('loadeddata', onLoaded);
+                    reveal();
+                });
+
+                // Safety timeout in case loadeddata never fires
+                setTimeout(function() {
+                    if (switching) reveal();
+                }, 3000);
+            }, 180);
+
             trackEvent('demo_tab_switch', containerId + ':' + (label || src));
         });
     });
@@ -264,16 +301,57 @@ function setupDualVideoTabs(containerId, videoAId, videoBId) {
     var videoB = document.getElementById(videoBId);
     if (!container || !videoA || !videoB) return;
 
+    var sideBySide = videoA.closest('.demo-side-by-side');
+    var switching = false;
+
     container.querySelectorAll('.demo-tab').forEach(function(button) {
         button.addEventListener('click', function() {
             var sourceA = button.getAttribute('data-mocap');
             var sourceB = button.getAttribute('data-depth');
             if (!sourceA || !sourceB) return;
+
+            if (switching) {
+                activateTab(container, button);
+                return;
+            }
+
+            switching = true;
             activateTab(container, button);
-            setVideoSource(videoA, sourceA);
-            setVideoSource(videoB, sourceB);
-            videoA.play().catch(function() {});
-            videoB.play().catch(function() {});
+
+            if (sideBySide) sideBySide.classList.add('is-switching');
+
+            setTimeout(function() {
+                setVideoSource(videoA, sourceA);
+                setVideoSource(videoB, sourceB);
+
+                var loaded = 0;
+                function onOneLoaded() {
+                    loaded++;
+                    if (loaded >= 2) reveal();
+                }
+
+                function reveal() {
+                    if (sideBySide) sideBySide.classList.remove('is-switching');
+                    videoA.play().catch(function() {});
+                    videoB.play().catch(function() {});
+                    switching = false;
+                }
+
+                videoA.addEventListener('loadeddata', function onA() {
+                    videoA.removeEventListener('loadeddata', onA);
+                    onOneLoaded();
+                });
+                videoB.addEventListener('loadeddata', function onB() {
+                    videoB.removeEventListener('loadeddata', onB);
+                    onOneLoaded();
+                });
+
+                // Safety timeout
+                setTimeout(function() {
+                    if (switching) reveal();
+                }, 3000);
+            }, 180);
+
             trackEvent('demo_tab_switch', containerId + ':' + button.textContent.trim());
         });
     });
@@ -602,6 +680,308 @@ function setupOutlinePanel() {
     updateActiveFromScroll();
 }
 
+/* ── 3D Card Tilt on Contribution Cards ── */
+function setupCardTilt() {
+    if (!window.matchMedia('(hover: hover)').matches) return;
+
+    var cards = document.querySelectorAll('.contribution-card');
+    cards.forEach(function(card) {
+        // Add highlight overlay div
+        var highlight = document.createElement('div');
+        highlight.className = 'card-tilt-highlight';
+        highlight.setAttribute('aria-hidden', 'true');
+        card.appendChild(highlight);
+
+        card.addEventListener('mousemove', function(e) {
+            var rect = card.getBoundingClientRect();
+            var x = e.clientX - rect.left;
+            var y = e.clientY - rect.top;
+            var centerX = rect.width / 2;
+            var centerY = rect.height / 2;
+            var rotateY = ((x - centerX) / centerX) * 4;
+            var rotateX = ((centerY - y) / centerY) * 4;
+
+            card.style.transform = 'perspective(800px) rotateX(' + rotateX + 'deg) rotateY(' + rotateY + 'deg) translateY(-2px)';
+            card.style.setProperty('--tilt-x', x + 'px');
+            card.style.setProperty('--tilt-y', y + 'px');
+        });
+
+        card.addEventListener('mouseleave', function() {
+            card.style.transform = '';
+        });
+    });
+}
+
+/* ── Mouse-following Gradient Spotlight on Hero ── */
+function setupHeroSpotlight() {
+    if (!window.matchMedia('(hover: hover)').matches) return;
+
+    var hero = document.querySelector('.hero-main');
+    if (!hero) return;
+
+    var rafId = null;
+    var mouseX = 0;
+    var mouseY = 0;
+
+    hero.addEventListener('mousemove', function(e) {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+
+        if (!rafId) {
+            rafId = requestAnimationFrame(function() {
+                var rect = hero.getBoundingClientRect();
+                var x = mouseX - rect.left;
+                var y = mouseY - rect.top;
+                hero.style.setProperty('--mouse-x', x + 'px');
+                hero.style.setProperty('--mouse-y', y + 'px');
+                rafId = null;
+            });
+        }
+    });
+}
+
+/* ── Distance Field Contour Visualization (Contributions) ── */
+function setupDFContours() {
+    if (!window.matchMedia('(hover: hover)').matches) return;
+
+    var section = document.querySelector('.contributions-section');
+    if (!section) return;
+
+    var canvas = document.createElement('canvas');
+    canvas.className = 'df-contour-canvas';
+    canvas.setAttribute('aria-hidden', 'true');
+    section.appendChild(canvas);
+
+    var ctx = canvas.getContext('2d');
+    var cards = section.querySelectorAll('.contribution-card');
+    if (!cards.length) return;
+
+    var raf = null;
+    var mx = -9999, my = -9999;
+    var STEP = 10;
+    var INTERVAL = 36;
+    var BAND = 2;
+    var RADIUS = 200;
+
+    // Returns { dist, nx, ny } — distance and nearest point on card surface
+    function sdf(px, py) {
+        var best = 1e9, nx = px, ny = py;
+        var sr = section.getBoundingClientRect();
+        for (var i = 0; i < cards.length; i++) {
+            var r = cards[i].getBoundingClientRect();
+            var l = r.left - sr.left, t = r.top - sr.top;
+            var ri = l + r.width, b = t + r.height;
+            // Clamp to card rect to find nearest surface point
+            var cx = Math.max(l, Math.min(px, ri));
+            var cy = Math.max(t, Math.min(py, b));
+            var ddx = px - cx, ddy = py - cy;
+            var d = Math.sqrt(ddx * ddx + ddy * ddy);
+            if (d < best) { best = d; nx = cx; ny = cy; }
+        }
+        return { dist: best, nx: nx, ny: ny };
+    }
+
+    function render() {
+        var w = section.offsetWidth;
+        var h = section.offsetHeight;
+        if (canvas.width !== w) canvas.width = w;
+        if (canvas.height !== h) canvas.height = h;
+        ctx.clearRect(0, 0, w, h);
+        if (mx < -5000) return;
+
+        var x0 = Math.max(0, (mx - RADIUS) / STEP | 0) * STEP;
+        var x1 = Math.min(w, mx + RADIUS);
+        var y0 = Math.max(0, (my - RADIUS) / STEP | 0) * STEP;
+        var y1 = Math.min(h, my + RADIUS);
+
+        for (var x = x0; x <= x1; x += STEP) {
+            for (var y = y0; y <= y1; y += STEP) {
+                var sd = sdf(x, y);
+                if (sd.dist < 4) continue;
+                var mod = sd.dist % INTERVAL;
+                var near = Math.min(mod, INTERVAL - mod);
+                if (near >= BAND) continue;
+
+                var contour = 1 - near / BAND;
+                var ddx = x - mx, ddy = y - my;
+                var dist = Math.sqrt(ddx * ddx + ddy * ddy);
+                var fade = 1 - dist / RADIUS;
+                if (fade <= 0) continue;
+                fade *= fade;
+
+                var a = 0.14 * contour * fade;
+                ctx.fillStyle = 'rgba(37,99,235,' + a.toFixed(3) + ')';
+                ctx.fillRect(x - 1, y - 1, 3, 3);
+            }
+        }
+
+        // Probe: arrow pointing toward nearest surface
+        var probe = sdf(mx, my);
+        if (probe.dist > 8) {
+            var dirX = probe.nx - mx, dirY = probe.ny - my;
+            var len = Math.sqrt(dirX * dirX + dirY * dirY);
+            var ux = dirX / len, uy = dirY / len;
+
+            // Arrow shaft
+            var shaftLen = Math.min(28, probe.dist - 6);
+            var sx = mx + ux * 8, sy = my + uy * 8;
+            var ex = mx + ux * (8 + shaftLen), ey = my + uy * (8 + shaftLen);
+            ctx.strokeStyle = 'rgba(37,99,235,0.35)';
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.moveTo(sx, sy);
+            ctx.lineTo(ex, ey);
+            ctx.stroke();
+
+            // Arrowhead
+            var headLen = 6;
+            var ax = -ux * headLen + uy * headLen * 0.5;
+            var ay = -uy * headLen - ux * headLen * 0.5;
+            var bx = -ux * headLen - uy * headLen * 0.5;
+            var by = -uy * headLen + ux * headLen * 0.5;
+            ctx.fillStyle = 'rgba(37,99,235,0.35)';
+            ctx.beginPath();
+            ctx.moveTo(ex, ey);
+            ctx.lineTo(ex + ax, ey + ay);
+            ctx.lineTo(ex + bx, ey + by);
+            ctx.closePath();
+            ctx.fill();
+        }
+
+        // Crosshair + distance label
+        ctx.strokeStyle = 'rgba(37,99,235,0.2)';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.arc(mx, my, 5, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.font = '600 10px Inter, system-ui, sans-serif';
+        ctx.fillStyle = 'rgba(37,99,235,0.4)';
+        ctx.fillText('d\u2009=\u2009' + probe.dist.toFixed(0), mx + 12, my - 8);
+    }
+
+    section.addEventListener('mousemove', function(e) {
+        var sr = section.getBoundingClientRect();
+        mx = e.clientX - sr.left;
+        my = e.clientY - sr.top;
+        if (!raf) {
+            raf = requestAnimationFrame(function() { render(); raf = null; });
+        }
+    });
+
+    section.addEventListener('mouseleave', function() {
+        mx = -9999; my = -9999;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    });
+}
+
+/* ── Cursor Trail — Root Trajectory Visualization ── */
+function setupCursorTrail() {
+    if (!window.matchMedia('(hover: hover)').matches) return;
+
+    var zones = document.querySelectorAll('.demo-section, .how-section');
+    if (!zones.length) return;
+
+    var canvas = document.createElement('canvas');
+    canvas.className = 'cursor-trail-canvas';
+    canvas.setAttribute('aria-hidden', 'true');
+    document.body.appendChild(canvas);
+
+    var ctx = canvas.getContext('2d');
+    var pts = [];
+    var LIFE = 400;
+    var raf = null;
+
+    function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    function inZone(cy) {
+        for (var i = 0; i < zones.length; i++) {
+            var r = zones[i].getBoundingClientRect();
+            if (cy >= r.top && cy <= r.bottom) return true;
+        }
+        return false;
+    }
+
+    document.addEventListener('mousemove', function(e) {
+        if (!inZone(e.clientY)) return;
+        pts.push({ x: e.clientX, y: e.clientY, t: performance.now() });
+        if (!raf) tick();
+    });
+
+    function tick() {
+        raf = requestAnimationFrame(function() {
+            var now = performance.now();
+            while (pts.length && now - pts[0].t > LIFE) pts.shift();
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (var i = 0; i < pts.length; i++) {
+                var age = (now - pts[i].t) / LIFE;
+                var a = 0.15 * (1 - age);
+                var r = 2 * (1 - age * 0.5);
+                ctx.beginPath();
+                ctx.arc(pts[i].x, pts[i].y, r, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(37,99,235,' + a.toFixed(3) + ')';
+                ctx.fill();
+            }
+
+            raf = null;
+            if (pts.length) tick();
+        });
+    }
+}
+
+/* ── Hero DF Rings — Gentle Mouse Tracking ── */
+function setupHeroDFTracking() {
+    if (!window.matchMedia('(hover: hover)').matches) return;
+
+    var hero = document.querySelector('.hero-main');
+    var rings = document.querySelector('.hero-df-rings');
+    if (!hero || !rings) return;
+
+    var curX = 0, curY = 0, tgtX = 0, tgtY = 0;
+    var raf = null;
+
+    hero.addEventListener('mousemove', function(e) {
+        var rect = hero.getBoundingClientRect();
+        tgtX = ((e.clientX - rect.left) / rect.width - 0.5) * 4;
+        tgtY = ((e.clientY - rect.top) / rect.height - 0.5) * 4;
+        if (!raf) animate();
+    });
+
+    hero.addEventListener('mouseleave', function() {
+        tgtX = 0; tgtY = 0;
+        if (!raf) animate();
+    });
+
+    function animate() {
+        raf = requestAnimationFrame(function() {
+            curX += (tgtX - curX) * 0.08;
+            curY += (tgtY - curY) * 0.08;
+            rings.style.transform = 'translate(calc(-50% + ' + curX.toFixed(2) + '%), calc(-50% + ' + curY.toFixed(2) + '%))';
+            raf = null;
+            if (Math.abs(tgtX - curX) > 0.01 || Math.abs(tgtY - curY) > 0.01) animate();
+        });
+    }
+}
+
+/* ── Video glow: add is-visible to demo-main-video-wrap when in view ── */
+function setupVideoGlow() {
+    var wraps = document.querySelectorAll('.demo-main-video-wrap');
+    if (!wraps.length || !('IntersectionObserver' in window)) return;
+
+    var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+            entry.target.classList.toggle('is-visible', entry.isIntersecting);
+        });
+    }, { threshold: 0.3 });
+
+    wraps.forEach(function(wrap) { observer.observe(wrap); });
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     var options = {
         slidesToScroll: 1,
@@ -633,6 +1013,14 @@ document.addEventListener('DOMContentLoaded', function() {
     setupRevealAnimations();
     setupBarChartAnimation();
     setupLineChartAnimation();
+
+    // Fancy visual enhancements
+    setupCardTilt();
+    setupHeroSpotlight();
+    setupVideoGlow();
+    setupDFContours();
+    setupCursorTrail();
+    setupHeroDFTracking();
 
     // Non-critical enhancements are isolated so they cannot block button behavior.
     try {
