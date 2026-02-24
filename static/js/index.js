@@ -510,7 +510,7 @@ function setupMujocoSessionLauncher() {
         // Hide overlay once iframe signals ready or after timeout
         function hideOverlay() { if (loadingOverlay) loadingOverlay.hidden = true; }
         window.addEventListener('message', function onReady(e) {
-            if (e.data && e.data.type === 'df-act-ready') {
+            if (e.data && e.data.type === 'lessmimic-ready') {
                 window.removeEventListener('message', onReady);
                 hideOverlay();
             }
@@ -523,7 +523,7 @@ function setupMujocoSessionLauncher() {
     if (closeButton) {
         closeButton.addEventListener('click', function() {
             // Signal iframe to clean up resources before tearing down
-            try { iframe.contentWindow.postMessage({ type: 'df-act-close' }, '*'); } catch(e) {}
+            try { iframe.contentWindow.postMessage({ type: 'lessmimic-close' }, '*'); } catch(e) {}
             // Brief delay for cleanup, then tear down
             setTimeout(function() {
                 iframe.src = 'about:blank';

@@ -1,12 +1,12 @@
 // Service Worker — cache-first for static assets, network-first for HTML
-const CACHE_NAME = 'df-act-v1';
+const CACHE_NAME = 'lessmimic-v1';
 
 // Assets to pre-cache on install (critical CSS/JS)
 const PRECACHE = [
   'static/css/bulma.min.css',
   'static/css/index.css',
   'static/js/index.js',
-  'static/images/df-act-icon.png',
+  'static/images/lessmimic-icon.png',
 ];
 
 self.addEventListener('install', (event) => {

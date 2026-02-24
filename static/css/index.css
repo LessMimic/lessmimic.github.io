@@ -2423,7 +2423,7 @@ a:focus,
   66% { transform: translate(20px, -25px); }
 }
 
-/* ── 3. Animated Gradient Text on DF-ACT Title ── */
+/* ── 3. Animated Gradient Text on LessMimic Title ── */
 .hero-main .publication-title .title-main {
   background: linear-gradient(135deg, #60a5fa, #a78bfa, #f472b6, #60a5fa);
   background-size: 300% 300%;

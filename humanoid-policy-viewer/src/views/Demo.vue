@@ -128,7 +128,7 @@
   </template>
   <div v-if="!isSmallScreen" class="controls">
     <v-card class="controls-card">
-      <v-card-title>DF-Act Interaction Demo</v-card-title>
+      <v-card-title>LessMimic Interaction Demo</v-card-title>
       <v-card-text class="py-0 controls-body">
 
         <v-divider class="my-2"/>
@@ -471,7 +471,7 @@ export default {
         this.renderScale = this.demo.renderScale ?? this.renderScale;
         this.state = 1;
         // Signal parent page that the viewer is ready (dismisses loading overlay)
-        try { window.parent.postMessage({ type: 'df-act-ready' }, '*'); } catch (e) {}
+        try { window.parent.postMessage({ type: 'lessmimic-ready' }, '*'); } catch (e) {}
         // Show shortcut overlay briefly on first load (desktop only)
         if (!this.isSmallScreen) {
           this.showShortcuts = true;
@@ -749,7 +749,7 @@ export default {
       this.demo?.dispose();
     });
     window.addEventListener('message', this._onMessage = (e) => {
-      if (e.data?.type === 'df-act-close') this.demo?.dispose();
+      if (e.data?.type === 'lessmimic-close') this.demo?.dispose();
     });
 
     const MOVE_SPEED = 1.5;  // units per second

@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   
   <!-- Primary Meta Tags -->
-  <meta name="title" content="DF-ACT: Generalizable Long-Horizon Humanoid Interaction via Distance Fields">
+  <meta name="title" content="LessMimic: Generalizable Long-Horizon Humanoid Interaction via Distance Fields">
   <meta name="description" content="Reference-free humanoid interaction via distance fields: generalize across object shapes and sizes, multiple skills in one policy, no hand-crafted rewards, root command and action label only.">
   <meta name="keywords" content="humanoid robot, distance field, manipulation, reinforcement learning, reference-free, long-horizon, multi-skill">
   <meta name="author" content="Yutang Lin, Jieming Cui, Yixuan Li, Baoxiong Jia, Yixin Zhu, Siyuan Huang">
@@ -14,14 +14,14 @@
   
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="article">
-  <meta property="og:site_name" content="DF-ACT">
-  <meta property="og:title" content="DF-ACT: Generalizable Long-Horizon Humanoid Interaction via Distance Fields">
+  <meta property="og:site_name" content="LessMimic">
+  <meta property="og:title" content="LessMimic: Generalizable Long-Horizon Humanoid Interaction via Distance Fields">
   <meta property="og:description" content="Reference-free humanoid interaction via distance fields. Generalize across object shapes/sizes, multiple skills in one policy, no hand-crafted rewards.">
-  <meta property="og:url" content="https://df-act.github.io/">
-  <meta property="og:image" content="https://df-act.github.io/static/images/carousel1.jpg">
+  <meta property="og:url" content="https://lessmimic.github.io/">
+  <meta property="og:image" content="https://lessmimic.github.io/static/images/carousel1.jpg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="DF-ACT - Generalizable Humanoid Interaction">
+  <meta property="og:image:alt" content="LessMimic - Generalizable Humanoid Interaction">
   <meta property="article:published_time" content="2026-07-01T00:00:00.000Z">
   <meta property="article:author" content="Yutang Lin">
   <meta property="article:section" content="Research">
@@ -30,20 +30,20 @@
 
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="DF-ACT: Generalizable Long-Horizon Humanoid Interaction via Distance Fields">
+  <meta name="twitter:title" content="LessMimic: Generalizable Long-Horizon Humanoid Interaction via Distance Fields">
   <meta name="twitter:description" content="Reference-free humanoid interaction via distance fields.">
-  <meta name="twitter:image" content="https://df-act.github.io/static/images/carousel1.jpg">
-  <meta name="twitter:image:alt" content="DF-ACT - Generalizable Humanoid Interaction">
+  <meta name="twitter:image" content="https://lessmimic.github.io/static/images/carousel1.jpg">
+  <meta name="twitter:image:alt" content="LessMimic - Generalizable Humanoid Interaction">
 
   <!-- Academic/Research Specific -->
-  <meta name="citation_title" content="DF-ACT: Generalizable Long-Horizon Humanoid Interaction via Distance Fields">
+  <meta name="citation_title" content="LessMimic: Generalizable Long-Horizon Humanoid Interaction via Distance Fields">
   <meta name="citation_author" content="Lin, Yutang">
   <meta name="citation_author" content="Cui, Jieming">
   <meta name="citation_author" content="Li, Yixuan">
   <meta name="citation_author" content="Jia, Baoxiong">
   <meta name="citation_author" content="Zhu, Yixin">
   <meta name="citation_author" content="Huang, Siyuan">
-  <meta name="citation_pdf_url" content="https://df-act.github.io/static/pdfs/RSS26_DF_Act.pdf">
+  <meta name="citation_pdf_url" content="https://lessmimic.github.io/static/pdfs/RSS26_LessMimic.pdf">
   
   <!-- Additional SEO -->
   <meta name="theme-color" content="#2563eb">
@@ -59,11 +59,11 @@
   <link rel="preconnect" href="https://cdn.jsdelivr.net">
 
 
-  <title>DF-ACT: Generalizable Long-Horizon Humanoid Interaction via Distance Fields</title>
+  <title>LessMimic: Generalizable Long-Horizon Humanoid Interaction via Distance Fields</title>
   
   <!-- Favicon and App Icons -->
-  <link rel="icon" type="image/png" href="static/images/df-act-icon.png">
-  <link rel="apple-touch-icon" href="static/images/df-act-icon.png">
+  <link rel="icon" type="image/png" href="static/images/lessmimic-icon.png">
+  <link rel="apple-touch-icon" href="static/images/lessmimic-icon.png">
   
   <!-- Critical CSS - Load synchronously -->
   <link rel="stylesheet" href="static/css/bulma.min.css">
@@ -97,7 +97,7 @@
   {
     "@context": "https://schema.org",
     "@type": "ScholarlyArticle",
-    "headline": "DF-ACT: Generalizable Long-Horizon Humanoid Interaction via Distance Fields",
+    "headline": "LessMimic: Generalizable Long-Horizon Humanoid Interaction via Distance Fields",
     "description": "Reference-free framework that leverages Distance Field as a unified interaction representation for generalizable long-horizon humanoid interaction.",
     "author": [
       {"@type": "Person", "name": "Yutang Lin"},
@@ -107,13 +107,13 @@
       {"@type": "Person", "name": "Yixin Zhu"},
       {"@type": "Person", "name": "Siyuan Huang"}
     ],
-    "url": "https://df-act.github.io/",
-    "image": "https://df-act.github.io/static/images/carousel1.jpg",
+    "url": "https://lessmimic.github.io/",
+    "image": "https://lessmimic.github.io/static/images/carousel1.jpg",
     "keywords": ["humanoid", "distance field", "manipulation", "reinforcement learning", "reference-free"],
-    "abstract": "Enabling humanoid robots to operate autonomously in persistent, long-horizon interactions with unstructured environments remains an open challenge. We introduce DF-ACT, a reference-free framework that leverages Distance Field (DF) as a unified interaction representation, enabling generalizable and long-horizon humanoid interaction. The robot operates directly on the DF to extract dense, directional geometric cues, allowing fast adaptation to object contours. At inference time, DF-ACT requires only a target root trajectory: actions are continuously conditioned on local geometry rather than predefined motion references. A single policy can execute long-horizon tasks by composing interaction skills such as picking up, sitting, pushing, and carrying, while supporting online correction and recovery from failures.",
+    "abstract": "Humanoid robots that autonomously interact with physical environments over extended horizons represent a central goal of embodied intelligence. Existing approaches rely on reference motions or task-specific rewards, tightly coupling policies to particular object geometries and precluding multi-skill generalization within a single framework. Here we show that Distance Field (DF) provides such a representation: LessMimic conditions a single whole-body policy on DF-derived geometric cues—surface distances, gradients, and velocity decompositions—removing the need for motion references, with interaction latents encoded via a VAE and post-trained using AIP-derived RL. Through DAgger-style distillation that aligns DF latents with egocentric depth features, LessMimic further transfers seamlessly to vision-only deployment without motion capture infrastructure. A single LessMimic policy achieves 80–100% success across object scales from 0.4× to 1.6× on PickUp and SitStand where baselines degrade sharply, attains 62.1% success on 5-task trajectories, and remains viable up to 40 sequentially composed tasks. By grounding interaction in local geometry rather than demonstrations, LessMimic offers a scalable path toward humanoid robots that generalize, compose skills, and recover from failures in unstructured environments.",
     "isAccessibleForFree": true,
     "license": "https://creativecommons.org/licenses/by/4.0/",
-    "mainEntity": {"@type": "WebPage", "@id": "https://df-act.github.io/"},
+    "mainEntity": {"@type": "WebPage", "@id": "https://lessmimic.github.io/"},
     "about": [
       {"@type": "Thing", "name": "Humanoid robotics"},
       {"@type": "Thing", "name": "Physical interaction"}
@@ -204,7 +204,7 @@
         <div class="columns is-centered">
           <div class="column has-text-centered hero-main-content">
             <h1 class="title is-1 publication-title hero-stagger hero-stagger--1">
-              <span class="title-main">DF-ACT</span>
+              <span class="title-main">LessMimic</span>
               <span class="title-sub">Generalizable Long-Horizon Humanoid <br>Interaction via Distance Fields</span>
             </h1>
             <div class="is-size-5 publication-authors hero-stagger hero-stagger--2" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.25em 1em; max-width: 36em; margin-left: auto; margin-right: auto; justify-items: center;">
@@ -231,12 +231,12 @@
               </div>
             </div>
             <!-- <div class="is-size-5 publication-authors" style="margin-top: 0.5em;">
-              <a href="https://df-act.github.io" target="_blank" rel="noopener noreferrer">Project Website: https://df-act.github.io</a>
+              <a href="https://lessmimic.github.io" target="_blank" rel="noopener noreferrer">Project Website: https://lessmimic.github.io</a>
             </div> -->
             <div class="column has-text-centered hero-stagger hero-stagger--5">
               <div class="publication-links">
                 <span class="link-block">
-                  <a href="static/pdfs/RSS26_DF_Act.pdf" target="_blank" rel="noopener noreferrer" class="external-link button is-normal is-rounded is-dark">
+                  <a href="static/pdfs/RSS26_LessMimic.pdf" target="_blank" rel="noopener noreferrer" class="external-link button is-normal is-rounded is-dark">
                     <span class="icon"><i class="fas fa-file-pdf"></i></span>
                     <span>Paper</span>
                   </a>
@@ -324,7 +324,7 @@
 
     <div class="how-layout">
       <div class="how-model-card reveal--scale">
-        <img src="static/images/model.png" alt="DF-ACT method overview converted from model PDF" loading="lazy">
+        <img src="static/images/model.png" alt="LessMimic method overview converted from model PDF" loading="lazy">
         <div class="how-model-caption">
           <h3>Method Overview</h3>
           <p>Unified distance-field representation and policy learning pipeline.</p>
@@ -754,7 +754,7 @@
         <h2 class="title is-3 section-heading reveal">Abstract <a href="#abstract-section" class="heading-anchor" aria-label="Link to this section">#</a></h2>
         <div class="content has-text-justified reveal">
           <p>
-            Enabling humanoid robots to operate autonomously in persistent, long-horizon interactions with unstructured environments remains an open challenge. Existing approaches often depend on detailed reference motions, task-specific reward design, or complex multi-stage pipelines, limiting their adaptability to environmental variations and hindering broad generalization across objects with diverse shapes and scales. We introduce <strong>DF-ACT</strong>, a reference-free framework that leverages <strong>Distance Field (DF)</strong> as a unified interaction representation, enabling generalizable and long-horizon humanoid interaction. The robot operates directly on the DF to extract dense, directional geometric cues, allowing fast adaptation to object contours without assumptions on object geometry. At inference time, DF-ACT requires only a target root trajectory: actions are continuously conditioned on local geometry rather than predefined motion references, which enables smooth transitions across interaction modes. As a result, a single policy learned within DF-ACT can execute long-horizon tasks by composing interaction skills such as picking up, sitting, pushing, and carrying over time, while naturally supporting online correction and recovery from interaction failures through continuous geometric feedback. Across diverse interaction tasks (PickUp, SitStand, Push, and Carry) and object scales from 0.4× to 1.6×, DF-ACT achieves robust performance without motion references.
+            Humanoid robots that autonomously interact with physical environments over extended horizons represent a central goal of embodied intelligence. Existing approaches rely on reference motions or task-specific rewards, tightly coupling policies to particular object geometries and precluding multi-skill generalization within a single framework. A unified interaction representation enabling reference-free inference, geometric generalization, and long-horizon skill composition within one policy remains an open challenge. Here we show that <strong>Distance Field (DF)</strong> provides such a representation: <strong>LessMimic</strong> conditions a single whole-body policy on DF-derived geometric cues&mdash;surface distances, gradients, and velocity decompositions&mdash;removing the need for motion references, with interaction latents encoded via a Variational Autoencoder (VAE) and post-trained using Adversarial Interaction Prior (AIP)-derived Reinforcement Learning (RL). Through DAgger-style distillation that aligns DF latents with egocentric depth features, LessMimic further transfers seamlessly to vision-only deployment without motion capture infrastructure. A single LessMimic policy achieves 80&ndash;100% success across object scales from 0.4&times; to 1.6&times; on PickUp and SitStand where baselines degrade sharply, attains 62.1% success on 5-task trajectories, and remains viable up to 40 sequentially composed tasks. By grounding interaction in local geometry rather than demonstrations, LessMimic offers a scalable path toward humanoid robots that generalize, compose skills, and recover from failures in unstructured environments.
           </p>
         </div>
       </div>
@@ -768,9 +768,9 @@
   <div class="hero-body">
     <div class="container">
       <h2 class="title">Paper (PDF)</h2>
-      <iframe src="static/pdfs/RSS26_DF_Act.pdf" width="100%" height="550" title="DF-ACT Paper PDF"></iframe>
+      <iframe src="static/pdfs/RSS26_LessMimic.pdf" width="100%" height="550" title="LessMimic Paper PDF"></iframe>
       <p class="has-text-centered is-size-7" style="margin-top: 0.5rem; color: var(--text-secondary);">
-        If the PDF does not display, <a href="static/pdfs/RSS26_DF_Act.pdf" download>download it directly</a>.
+        If the PDF does not display, <a href="static/pdfs/RSS26_LessMimic.pdf" download>download it directly</a>.
       </p>
     </div>
   </div>
@@ -789,11 +789,11 @@
           <span class="copy-text">Copy</span>
         </button>
       </div>
-      <pre id="bibtex-code"><code>@article{lin2026dfact,
-  title={DF-ACT: Generalizable Long-Horizon Humanoid Interaction via Distance Fields},
+      <pre id="bibtex-code"><code>@article{lin2026lessmimic,
+  title={LessMimic: Generalizable Long-Horizon Humanoid Interaction via Distance Fields},
   author={Lin, Yutang and Cui, Jieming and Li, Yixuan and Jia, Baoxiong and Zhu, Yixin and Huang, Siyuan},
   journal={Preprint},
-  url={https://df-act.github.io/}
+  url={https://lessmimic.github.io/}
 }</code></pre>
     </div>
 </section>

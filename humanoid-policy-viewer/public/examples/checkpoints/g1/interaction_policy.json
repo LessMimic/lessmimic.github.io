@@ -1,16 +1,16 @@
 {
   "policy_type": "interaction",
   "onnx": {
-    "path": "../../df-act-live-demo-assets/policy.onnx"
+    "path": "../../lessmimic-live-demo-assets/policy.onnx"
   },
   "latent_encoder": {
-    "path": "../../df-act-live-demo-assets/latent_encoder.onnx"
+    "path": "../../lessmimic-live-demo-assets/latent_encoder.onnx"
   },
   "sdf": {
     "objects": {
-      "box": "../../df-act-live-demo-assets/box_sdf.json",
-      "chair": "../../df-act-live-demo-assets/chair_sdf.json",
-      "crate": "../../df-act-live-demo-assets/crate_sdf.json"
+      "box": "../../lessmimic-live-demo-assets/box_sdf.json",
+      "chair": "../../lessmimic-live-demo-assets/chair_sdf.json",
+      "crate": "../../lessmimic-live-demo-assets/crate_sdf.json"
     },
     "query_body_names": [
       "left_wrist_yaw_link",

@@ -265,7 +265,7 @@ CHAIR_BOXES = [
 
 def main():
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    assets_dir = os.path.join(script_dir, 'df-act-live-demo-assets')
+    assets_dir = os.path.join(script_dir, 'lessmimic-live-demo-assets')
 
     # Box and crate: simple single-geom objects — OBJ meshes match MuJoCo exactly
     obj_files = {

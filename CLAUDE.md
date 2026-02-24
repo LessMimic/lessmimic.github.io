@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Academic project website for "DF-ACT: Generalizable Long-Horizon Humanoid Interaction via Distance Fields" (RSS 2026). The site has two layers:
+Academic project website for "LessMimic: Generalizable Long-Horizon Humanoid Interaction via Distance Fields" (RSS 2026). The site has two layers:
 
 1. **Static presentation layer** (`index.html`) — Bulma CSS + vanilla JS page with videos, carousels, and paper content.
 2. **Interactive demo app** (`humanoid-policy-viewer/`) — Vue 3 + Vite SPA that runs MuJoCo physics simulation with ONNX neural network policy inference entirely in the browser. Embedded via iframe in the main page.
@@ -71,7 +71,7 @@ GitHub Actions (`.github/workflows/deploy-pages.yml`) deploys on push to `master
 
 **UI controls** (`views/Demo.vue`): WASD movement, task condition selection (None/Carry/Push), OBJ upload with real-time SDF computation, object position/rotation editing.
 
-### Demo Assets (`df-act-live-demo-assets/`)
+### Demo Assets (`lessmimic-live-demo-assets/`)
 - `policy.onnx` / `latent_encoder.onnx` — trained neural network models
 - `*.obj` — 3D meshes for interaction objects
 - `*_sdf.json` — precomputed distance fields
