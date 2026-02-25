@@ -26,13 +26,15 @@
 /* Smooth scrolling for better UX */
 html {
   scroll-behavior: smooth;
+  /* Root font stays 16px up to ~1920px, then grows gently for large displays */
+  font-size: clamp(16px, 0.25vw + 11.2px, 22px);
 }
 
 body {
   font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
   color: var(--text-primary);
   line-height: 1.6;
-  font-size: 16px;
+  font-size: 1rem;
   background-color: var(--background-primary);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -114,6 +116,22 @@ body {
   justify-content: center;
   align-items: center;
   gap: 0.35rem 0.15rem;
+}
+
+/* In the hero, keep all buttons on a single row on desktop */
+.hero-main .publication-links {
+  flex-wrap: nowrap;
+  gap: 0.5rem;
+}
+
+.hero-main .publication-links .link-block .button {
+  margin: 0;
+}
+
+@media screen and (max-width: 768px) {
+  .hero-main .publication-links {
+    flex-wrap: wrap;
+  }
 }
 
 .dnerf {
@@ -305,9 +323,12 @@ body {
   position: relative;
   z-index: 3;
   width: 100%;
-  padding-top: 10rem;
-  padding-bottom: 5rem;
+  padding: 8vh 2vw 4vh;
   pointer-events: none;
+  /* Flex-center so content stays centered at every viewport width */
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Re-enable pointer events on interactive content inside hero */
@@ -318,6 +339,14 @@ body {
 
 .hero-main .hero-main-content {
   padding: 0;
+}
+
+/* Remove Bulma's fixed container width — hero content centres via flex above */
+.hero-main .container {
+  max-width: none !important;
+  width: clamp(300px, 80vw, 100%);
+  margin: 0 auto;
+  text-align: center;
 }
 
 
@@ -351,9 +380,27 @@ body {
   text-shadow: 0 4px 20px rgba(2, 6, 23, 0.45);
 }
 
+/* Hero text uses vw so it scales with the viewport, matching the video grid */
 @media screen and (min-width: 769px) {
   .hero-main .publication-title {
-    font-size: 3.5rem !important;
+    font-size: clamp(2.8rem, 3.8vw, 6rem) !important;
+  }
+
+  .hero-main .publication-authors {
+    font-size: clamp(0.9rem, 1.1vw, 1.6rem) !important;
+  }
+
+  .hero-main .affiliations-body {
+    font-size: clamp(0.65rem, 0.7vw, 1rem) !important;
+  }
+
+  .hero-main .publication-links .button {
+    font-size: clamp(0.8rem, 0.85vw, 1.2rem) !important;
+    padding: clamp(0.4rem, 0.5vw, 0.8rem) clamp(0.8rem, 1vw, 1.6rem) !important;
+  }
+
+  .hero-main .eql-cntrb {
+    font-size: clamp(0.7rem, 0.75vw, 1.1rem);
   }
 }
 
@@ -2721,6 +2768,44 @@ a:focus,
   height: 100vh;
   pointer-events: none;
   z-index: 5;
+}
+
+/* ══════════════════════════════════════════════════════════
+   LARGE SCREEN / 4K SCALING
+   clamp(baseline, vw-fraction, cap) automatically adapts
+   every container width to the viewport — no manual
+   breakpoints needed.
+   ══════════════════════════════════════════════════════════ */
+.container.is-max-desktop {
+  max-width: clamp(960px, 60vw, 2000px) !important;
+}
+
+.contributions-section .contributions-grid {
+  max-width: clamp(56rem, 60vw, 100rem);
+}
+
+.how-section .how-layout {
+  max-width: clamp(1000px, 55vw, 1800px);
+}
+
+.demo-main-video-wrap {
+  max-width: clamp(720px, 38vw, 1200px);
+}
+
+.demo-side-by-side {
+  max-width: clamp(900px, 48vw, 1600px);
+}
+
+.stats-section .stats-grid {
+  max-width: clamp(980px, 52vw, 1600px);
+}
+
+.demo-section .demo-desc {
+  max-width: clamp(42rem, 35vw, 60rem);
+}
+
+.mujoco-session-container {
+  max-width: clamp(1600px, 85vw, 3200px) !important;
 }
 
 /* Print styles */
