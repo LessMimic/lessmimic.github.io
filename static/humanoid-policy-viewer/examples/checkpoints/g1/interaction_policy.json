@@ -1,0 +1,90 @@
+{
+  "policy_type": "interaction",
+  "onnx": {
+    "path": "../../lessmimic-live-demo-assets/policy.onnx"
+  },
+  "latent_encoder": {
+    "path": "../../lessmimic-live-demo-assets/latent_encoder.onnx"
+  },
+  "sdf": {
+    "objects": {
+      "box": "../../lessmimic-live-demo-assets/box_sdf.json",
+      "chair": "../../lessmimic-live-demo-assets/chair_sdf.json",
+      "crate": "../../lessmimic-live-demo-assets/crate_sdf.json"
+    },
+    "query_body_names": [
+      "left_wrist_yaw_link",
+      "right_wrist_yaw_link",
+      "pelvis",
+      "left_ankle_roll_link",
+      "right_ankle_roll_link",
+      "left_shoulder_pitch_link",
+      "right_shoulder_pitch_link"
+    ],
+    "scene_object_body_names": ["box", "chair", "crate"],
+    "max_valid_distance": 1.0
+  },
+  "history_length": 5,
+  "action_clip": 10.0,
+  "policy_joint_names": [
+    "left_hip_pitch_joint",
+    "left_hip_roll_joint",
+    "left_hip_yaw_joint",
+    "left_knee_joint",
+    "left_ankle_pitch_joint",
+    "left_ankle_roll_joint",
+    "right_hip_pitch_joint",
+    "right_hip_roll_joint",
+    "right_hip_yaw_joint",
+    "right_knee_joint",
+    "right_ankle_pitch_joint",
+    "right_ankle_roll_joint",
+    "waist_yaw_joint",
+    "waist_roll_joint",
+    "waist_pitch_joint",
+    "left_shoulder_pitch_joint",
+    "left_shoulder_roll_joint",
+    "left_shoulder_yaw_joint",
+    "left_elbow_joint",
+    "left_wrist_roll_joint",
+    "left_wrist_pitch_joint",
+    "left_wrist_yaw_joint",
+    "right_shoulder_pitch_joint",
+    "right_shoulder_roll_joint",
+    "right_shoulder_yaw_joint",
+    "right_elbow_joint",
+    "right_wrist_roll_joint",
+    "right_wrist_pitch_joint",
+    "right_wrist_yaw_joint"
+  ],
+  "action_scale": [
+    1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+    1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+    1.0, 1.0, 1.0,
+    1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+    1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0
+  ],
+  "stiffness": [
+    120, 120, 120, 160, 40, 40,
+    120, 120, 120, 160, 40, 40,
+    200, 200, 200,
+    40, 40, 40, 40, 40, 20, 20,
+    40, 40, 40, 40, 40, 20, 20
+  ],
+  "damping": [
+    3.0, 3.0, 3.0, 4.0, 1.0, 1.0,
+    3.0, 3.0, 3.0, 4.0, 1.0, 1.0,
+    5.0, 5.0, 5.0,
+    1.0, 1.0, 1.0, 1.0, 1.0, 0.5, 0.5,
+    1.0, 1.0, 1.0, 1.0, 1.0, 0.5, 0.5
+  ],
+  "default_joint_pos": [
+    0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0,
+    0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0
+  ],
+  "control_type": "joint_position",
+  "scene_xml": "g1/g1_interaction.xml"
+}

@@ -36,8 +36,19 @@ jobs:
         run: npm run build
         working-directory: humanoid-policy-viewer
 
+      - name: Verify viewer build output
+        run: |
+          test -f static/humanoid-policy-viewer/index.html || { echo "ERROR: humanoid-policy-viewer build output missing"; exit 1; }
+
       - name: Prepare Pages artifact
-        run: mkdir -p _site && cp index.html _site/index.html && cp -R static _site/static && cp -R lessmimic-live-demo-assets _site/lessmimic-live-demo-assets && if [ -f sw.js ]; then cp sw.js _site/sw.js; fi && if [ -f .nojekyll ]; then cp .nojekyll _site/.nojekyll; fi && if [ -f CNAME ]; then cp CNAME _site/CNAME; fi
+        run: |
+          mkdir -p _site
+          cp index.html _site/index.html
+          cp -R static _site/static
+          cp -R lessmimic-live-demo-assets _site/lessmimic-live-demo-assets
+          [ ! -f sw.js ] || cp sw.js _site/sw.js
+          [ ! -f CNAME ] || cp CNAME _site/CNAME
+          touch _site/.nojekyll
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
