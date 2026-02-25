@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Academic project website for "LessMimic: Generalizable Long-Horizon Humanoid Interaction via Distance Fields" (RSS 2026). The site has two layers:
+Academic project website for "LessMimic: Generalizable Long-Horizon Humanoid Interaction via Distance Fields". The site has two layers:
 
 1. **Static presentation layer** (`index.html`) — Bulma CSS + vanilla JS page with videos, carousels, and paper content.
 2. **Interactive demo app** (`humanoid-policy-viewer/`) — Vue 3 + Vite SPA that runs MuJoCo physics simulation with ONNX neural network policy inference entirely in the browser. Embedded via iframe in the main page.

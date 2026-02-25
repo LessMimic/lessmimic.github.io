@@ -344,6 +344,11 @@ body {
 .author-block {
   display: inline-block;
   margin-right: 0.5rem;
+  white-space: nowrap;
+}
+
+.author-block sup {
+  font-size: 0.6em;
 }
 
 .publication-banner img {
