@@ -312,9 +312,7 @@ body {
 
 /* Re-enable pointer events on interactive content inside hero */
 .hero-main .hero-body a,
-.hero-main .hero-body button,
-.hero-main .hero-body .publication-links,
-.hero-main .hero-body .affiliations-wrap {
+.hero-main .hero-body button {
   pointer-events: auto;
 }
 
