@@ -1099,15 +1099,24 @@ code {
   .hero-main .publication-title {
     font-size: 1.8rem !important;
     line-height: 1.25 !important;
-    margin-bottom: 1rem !important;
+    margin-bottom: 0.6rem !important;
   }
 
   .hero-main .title-main {
-    font-size: 2.2rem !important;
+    font-size: 2.8rem !important;
   }
 
   .hero-main .title-sub {
-    font-size: 0.85rem !important;
+    font-size: 0.9rem !important;
+  }
+
+  /* Tighten spacing between authors → equal-contrib → affiliations */
+  .hero-main .publication-authors {
+    margin-bottom: 0.35rem !important;
+  }
+
+  .hero-main .affiliations-wrap {
+    margin-top: 0.15em !important;
   }
 
   /* Author list: inline flow, centered */
@@ -1297,11 +1306,11 @@ code {
   }
 
   .hero-main .title-main {
-    font-size: 1.8rem !important;
+    font-size: 2.2rem !important;
   }
 
   .hero-main .title-sub {
-    font-size: 0.75rem !important;
+    font-size: 0.78rem !important;
   }
 
   .publication-links {
