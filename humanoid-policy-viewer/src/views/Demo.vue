@@ -50,9 +50,15 @@
     <!-- Turn buttons (bottom-right) -->
     <div class="mobile-turn-buttons">
       <button class="mobile-turn-btn"
-        @touchstart.prevent="startTurn(-1)" @touchend.prevent="stopTurn()" @touchcancel.prevent="stopTurn()">&#x21B6;</button>
+        @touchstart.prevent="startTurn(1)" @touchend.prevent="stopTurn()" @touchcancel.prevent="stopTurn()">&#x21B6;</button>
       <button class="mobile-turn-btn"
-        @touchstart.prevent="startTurn(1)" @touchend.prevent="stopTurn()" @touchcancel.prevent="stopTurn()">&#x21B7;</button>
+        @touchstart.prevent="startTurn(-1)" @touchend.prevent="stopTurn()" @touchcancel.prevent="stopTurn()">&#x21B7;</button>
+    </div>
+    <!-- Skill buttons (top-center) -->
+    <div class="mobile-skill-bar">
+      <button :class="['mobile-skill-btn', { active: taskConditionLabel === 'None' }]" @click="setTaskCondition(0)">None</button>
+      <button :class="['mobile-skill-btn', { active: taskConditionLabel === 'Carry' }]" @click="setTaskCondition(1)">Carry</button>
+      <button :class="['mobile-skill-btn', { active: taskConditionLabel === 'Push' }]" @click="setTaskCondition(2)">Push</button>
     </div>
     <!-- Slide-up drawer toggle -->
     <button class="mobile-drawer-toggle" @click="mobileDrawerOpen = !mobileDrawerOpen">
@@ -392,7 +398,7 @@ export default {
     objProgress: 0,
     userObjects: [],   // [{ name, label, pos: [x,y,z], euler: [rx,ry,rz] (deg), scale, confirmed, expanded }]
     // Collapsible panel sections
-    sectionMovement: false,
+    sectionMovement: true,
     sectionTask: true,
     sectionObject: true,
     sectionSettings: false,
@@ -833,7 +839,7 @@ export default {
 .controls {
   position: fixed;
   top: 20px;
-  right: 20px;
+  left: 20px;
   width: 320px;
   z-index: 1000;
 }
@@ -1093,6 +1099,39 @@ export default {
 }
 
 .mobile-turn-btn:active {
+  background: rgba(37, 99, 235, 0.5);
+}
+
+/* Skill switching bar (top-center) */
+.mobile-skill-bar {
+  position: fixed;
+  top: 48px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 6px;
+  z-index: 1100;
+}
+
+.mobile-skill-btn {
+  padding: 6px 14px;
+  border-radius: 16px;
+  border: 1.5px solid rgba(255, 255, 255, 0.15);
+  background: rgba(30, 41, 59, 0.5);
+  color: #cbd5e1;
+  font-size: 0.75rem;
+  font-weight: 600;
+  touch-action: manipulation;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.mobile-skill-btn.active {
+  background: rgba(37, 99, 235, 0.7);
+  border-color: rgba(96, 165, 250, 0.6);
+  color: #ffffff;
+}
+
+.mobile-skill-btn:active {
   background: rgba(37, 99, 235, 0.5);
 }
 

@@ -162,36 +162,50 @@
         </a>
       </div>
     </div>
-  </div>
 
-  <aside class="outline-panel" aria-label="Page outline">
-    <div class="outline-panel-title" id="outline-toggle">
-      <span>Outline</span>
-      <button class="outline-fold-btn" aria-label="Toggle outline" title="Toggle outline">
+    <aside class="outline-panel" aria-label="Page outline">
+      <div class="outline-panel-title" id="outline-toggle">
+        <i class="fas fa-list-ul"></i>
+        <span>Outline</span>
         <svg class="outline-fold-icon" viewBox="0 0 16 16" width="12" height="12"><path d="M4 6l4 4 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </button>
-    </div>
-    <div class="outline-links" id="outline-links">
-      <a href="#top-section" class="outline-link active" data-outline-link="top-section">Top</a>
-      <a href="#contributions-section" class="outline-link" data-outline-link="contributions-section">Contributions</a>
-      <a href="#method-section" class="outline-link" data-outline-link="method-section">Method</a>
-      <a href="#live-demo-section" class="outline-link" data-outline-link="live-demo-section">Live MuJoCo</a>
-      <a href="#generalization-section" class="outline-link" data-outline-link="generalization-section">Objects</a>
-      <a href="#recovery-section" class="outline-link" data-outline-link="recovery-section">Recovery</a>
-      <a href="#longhorizon-section" class="outline-link" data-outline-link="longhorizon-section">Long-horizon</a>
-      <a href="#perception-section" class="outline-link" data-outline-link="perception-section">Perception</a>
-      <a href="#results-section" class="outline-link" data-outline-link="results-section">Results</a>
-      <a href="#abstract-section" class="outline-link" data-outline-link="abstract-section">Abstract</a>
-      <a href="#paper-section" class="outline-link" data-outline-link="paper-section">Paper PDF</a>
-      <a href="#BibTeX" class="outline-link" data-outline-link="BibTeX">BibTeX</a>
-    </div>
-  </aside>
+      </div>
+      <div class="outline-links" id="outline-links">
+        <a href="#top-section" class="outline-link active" data-outline-link="top-section">Top</a>
+        <a href="#contributions-section" class="outline-link" data-outline-link="contributions-section">Contributions</a>
+        <a href="#method-section" class="outline-link" data-outline-link="method-section">Method</a>
+        <a href="#live-demo-section" class="outline-link" data-outline-link="live-demo-section">Live MuJoCo</a>
+        <a href="#generalization-section" class="outline-link" data-outline-link="generalization-section">Objects</a>
+        <a href="#recovery-section" class="outline-link" data-outline-link="recovery-section">Recovery</a>
+        <a href="#longhorizon-section" class="outline-link" data-outline-link="longhorizon-section">Long-horizon</a>
+        <a href="#perception-section" class="outline-link" data-outline-link="perception-section">Perception</a>
+        <a href="#results-section" class="outline-link" data-outline-link="results-section">Results</a>
+        <a href="#abstract-section" class="outline-link" data-outline-link="abstract-section">Abstract</a>
+        <a href="#paper-section" class="outline-link" data-outline-link="paper-section">Paper PDF</a>
+        <a href="#BibTeX" class="outline-link" data-outline-link="BibTeX">BibTeX</a>
+      </div>
+    </aside>
+  </div>
 
   <main id="main-content">
   <section class="hero hero-main" id="top-section">
-    <video class="hero-main-video" autoplay muted loop playsinline preload="metadata" aria-hidden="true">
-      <source src="static/videos/demo_background.mp4" type="video/mp4">
-    </video>
+    <div class="hero-video-grid" aria-hidden="true">
+      <div class="grid-cell"><video autoplay muted loop playsinline preload="metadata"><source src="static/videos/pick_box.mp4" type="video/mp4"></video><span class="grid-label">Pick up box</span></div>
+      <div class="grid-cell"><video autoplay muted loop playsinline preload="metadata"><source src="static/videos/push.mp4" type="video/mp4"></video><span class="grid-label">Push object</span></div>
+      <div class="grid-cell"><video autoplay muted loop playsinline preload="metadata"><source src="static/videos/sit_stand.mp4" type="video/mp4"></video><span class="grid-label">Sit &amp; stand</span></div>
+      <div class="grid-cell"><video autoplay muted loop playsinline preload="metadata"><source src="static/videos/carry_box.mp4" type="video/mp4"></video><span class="grid-label">Carry box</span></div>
+      <div class="grid-cell"><video autoplay muted loop playsinline preload="metadata"><source src="static/videos/recover_box.mp4" type="video/mp4"></video><span class="grid-label">Recovery</span></div>
+      <div class="grid-cell"><video autoplay muted loop playsinline preload="metadata"><source src="static/videos/pick_foam.mp4" type="video/mp4"></video><span class="grid-label">Pick up foam</span></div>
+      <div class="grid-cell"><video autoplay muted loop playsinline preload="metadata"><source src="static/videos/sit_chest.mp4" type="video/mp4"></video><span class="grid-label">Sit on chest</span></div>
+      <div class="grid-cell"><video autoplay muted loop playsinline preload="metadata"><source src="static/videos/push_vision.mp4" type="video/mp4"></video><span class="grid-label">Push (vision)</span></div>
+      <div class="grid-cell"><video autoplay muted loop playsinline preload="metadata"><source src="static/videos/carry_foam.mp4" type="video/mp4"></video><span class="grid-label">Carry foam</span></div>
+      <div class="grid-cell"><video autoplay muted loop playsinline preload="metadata"><source src="static/videos/pick_soccer.mp4" type="video/mp4"></video><span class="grid-label">Pick up ball</span></div>
+      <div class="grid-cell"><video autoplay muted loop playsinline preload="metadata"><source src="static/videos/push_sit_carry.mp4" type="video/mp4"></video><span class="grid-label">Long-horizon</span></div>
+      <div class="grid-cell"><video autoplay muted loop playsinline preload="metadata"><source src="static/videos/recover_foam.mp4" type="video/mp4"></video><span class="grid-label">Recover foam</span></div>
+      <div class="grid-cell"><video autoplay muted loop playsinline preload="metadata"><source src="static/videos/sit_vision.mp4" type="video/mp4"></video><span class="grid-label">Sit (vision)</span></div>
+      <div class="grid-cell"><video autoplay muted loop playsinline preload="metadata"><source src="static/videos/carry_box_vision.mp4" type="video/mp4"></video><span class="grid-label">Carry (vision)</span></div>
+      <div class="grid-cell"><video autoplay muted loop playsinline preload="metadata"><source src="static/videos/pick_foam_vision_1.mp4" type="video/mp4"></video><span class="grid-label">Pick (vision)</span></div>
+      <div class="grid-cell"><video autoplay muted loop playsinline preload="metadata"><source src="static/videos/recover_soccer.mp4" type="video/mp4"></video><span class="grid-label">Recover ball</span></div>
+    </div>
     <div class="hero-main-overlay" aria-hidden="true"></div>
     <svg class="hero-df-rings" viewBox="0 0 800 800" aria-hidden="true">
       <ellipse cx="400" cy="400" rx="100" ry="80" class="df-ring df-ring--1"/>

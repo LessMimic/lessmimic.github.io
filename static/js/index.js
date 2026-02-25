@@ -457,6 +457,7 @@ function setupContributionCards() {
 
 function pauseAllVideos() {
     document.querySelectorAll('video').forEach(function(v) {
+        if (v.closest('.hero-video-grid')) return;
         v.pause();
     });
     if (carouselObserver) carouselObserver.disconnect();
@@ -495,8 +496,6 @@ function setupMujocoSessionLauncher() {
         var iframeSrc = iframe.getAttribute('data-src');
         if (!iframeSrc) return;
 
-        pauseAllVideos();
-
         // Show loading overlay
         if (loadingOverlay) loadingOverlay.hidden = false;
 
@@ -533,7 +532,6 @@ function setupMujocoSessionLauncher() {
                 startButton.removeAttribute('aria-disabled');
                 startButton.textContent = 'Start Live MuJoCo Session';
                 closeButton.hidden = true;
-                resumeAllVideos();
             }, 150);
             trackEvent('mujoco_session', 'close');
         });
