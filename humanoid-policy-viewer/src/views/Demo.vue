@@ -458,7 +458,9 @@ export default {
         && !/FxiOS\//.test(ua);
     },
     updateScreenState() {
-      this.isSmallScreen = window.innerWidth < 500 || window.innerHeight < 700;
+      const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+      const isSmallViewport = window.innerWidth < 500 || window.innerHeight < 700;
+      this.isSmallScreen = isTouchDevice && isSmallViewport;
     },
     async init() {
       if (typeof WebAssembly !== 'object' || typeof WebAssembly.instantiate !== 'function') {
