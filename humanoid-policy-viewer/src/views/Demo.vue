@@ -840,10 +840,11 @@ export default {
 <style scoped>
 .controls {
   position: fixed;
-  top: 20px;
-  left: 20px;
-  width: 320px;
+  top: clamp(12px, 1.2vw, 24px);
+  left: clamp(12px, 1.2vw, 24px);
+  width: clamp(260px, 20vw, 420px);
   z-index: 1000;
+  font-size: clamp(0.7rem, 0.85vw, 1rem);
 }
 
 .global-alerts {
@@ -868,13 +869,19 @@ export default {
 }
 
 .controls-card {
-  max-height: calc(100vh - 40px);
+  max-height: calc(100vh - clamp(24px, 2.4vw, 48px));
+}
+
+.controls-card :deep(.v-card-title) {
+  font-size: clamp(0.9rem, 1.1vw, 1.35rem);
+  padding: clamp(8px, 0.8vw, 16px) clamp(10px, 1vw, 20px);
 }
 
 .controls-body {
-  max-height: calc(100vh - 160px);
+  max-height: calc(100vh - clamp(100px, 10vw, 200px));
   overflow-y: auto;
   overscroll-behavior: contain;
+  padding: 0 clamp(8px, 0.8vw, 16px) clamp(8px, 0.8vw, 16px) !important;
 }
 
 .motion-status {
@@ -906,8 +913,12 @@ export default {
 
 .task-buttons {
   display: flex;
-  gap: 6px;
+  gap: clamp(4px, 0.4vw, 8px);
   flex-wrap: wrap;
+}
+
+.task-buttons .v-btn {
+  font-size: clamp(0.65rem, 0.75vw, 0.9rem) !important;
 }
 
 .user-objects-list {
@@ -948,9 +959,9 @@ export default {
 }
 
 .pos-input {
-  width: 56px;
-  padding: 1px 4px;
-  font-size: 0.75rem;
+  width: clamp(44px, 3.5vw, 72px);
+  padding: clamp(1px, 0.1vw, 3px) clamp(2px, 0.3vw, 6px);
+  font-size: clamp(0.65rem, 0.75vw, 0.9rem);
   border: 1px solid rgba(128, 128, 128, 0.3);
   border-radius: 4px;
   text-align: center;
@@ -971,8 +982,8 @@ export default {
 
 .user-object-scale label {
   white-space: nowrap;
-  min-width: 48px;
-  font-size: 0.7rem;
+  min-width: clamp(36px, 3vw, 56px);
+  font-size: clamp(0.6rem, 0.7vw, 0.85rem);
 }
 
 .user-object-scale .v-slider {
@@ -990,9 +1001,13 @@ export default {
 .section-header {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: clamp(2px, 0.3vw, 6px);
   cursor: pointer;
   user-select: none;
+}
+
+.section-header .v-icon {
+  font-size: clamp(12px, 0.9vw, 18px) !important;
 }
 
 .section-header:hover {
