@@ -46,6 +46,8 @@
   <meta name="citation_author" content="Jia, Baoxiong">
   <meta name="citation_author" content="Zhu, Yixin">
   <meta name="citation_author" content="Huang, Siyuan">
+  <meta name="citation_conference_title" content="Advances in Neural Information Processing Systems (NeurIPS 2026)">
+  <meta name="citation_publication_date" content="2026">
   <meta name="citation_pdf_url" content="https://lessmimic.github.io/static/pdfs/lessmimic.pdf">
   
   <!-- Additional SEO -->
@@ -112,6 +114,11 @@
     ],
     "url": "https://lessmimic.github.io/",
     "image": "https://lessmimic.github.io/static/images/carousel1.jpg",
+    "datePublished": "2026",
+    "isPartOf": {
+      "@type": "CreativeWork",
+      "name": "Advances in Neural Information Processing Systems (NeurIPS 2026)"
+    },
     "keywords": ["humanoid", "distance field", "manipulation", "reinforcement learning", "reference-free"],
     "abstract": "Humanoid robots that autonomously interact with physical environments over extended horizons represent a central goal of embodied intelligence. Existing approaches rely on reference motions or task-specific rewards, tightly coupling policies to particular object geometries and precluding multi-skill generalization within a single framework. Here we show that Distance Field (DF) provides such a representation: LessMimic conditions a single whole-body policy on DF-derived geometric cues—surface distances, gradients, and velocity decompositions—removing the need for motion references, with interaction latents encoded via a VAE and post-trained using AIP-derived RL. Through DAgger-style distillation that aligns DF latents with egocentric depth features, LessMimic further transfers seamlessly to vision-only deployment without motion capture infrastructure. A single LessMimic policy achieves 80–100% success across object scales from 0.4× to 1.6× on PickUp and SitStand where baselines degrade sharply, attains 62.1% success on 5-task trajectories, and remains viable up to 40 sequentially composed tasks. By grounding interaction in local geometry rather than demonstrations, LessMimic offers a scalable path toward humanoid robots that generalize, compose skills, and recover from failures in unstructured environments.",
     "isAccessibleForFree": true,
@@ -228,11 +235,15 @@
       <div class="container is-max-desktop">
         <div class="columns is-centered">
           <div class="column has-text-centered hero-main-content">
-            <h1 class="title is-1 publication-title hero-stagger hero-stagger--1">
+            <div class="venue-banner hero-stagger hero-stagger--1" role="status" aria-label="Accepted at NeurIPS 2026">
+              <span class="venue-banner-dot" aria-hidden="true"></span>
+              Accepted at <strong>NeurIPS 2026</strong>
+            </div>
+            <h1 class="title is-1 publication-title hero-stagger hero-stagger--2">
               <span class="title-main">LessMimic</span>
               <span class="title-sub">Long-Horizon Humanoid Interaction with <br>Unified Distance Field Representations</span>
             </h1>
-            <div class="is-size-5 publication-authors hero-stagger hero-stagger--2" style="display: grid; grid-template-columns: repeat(3, auto); gap: 0.25em 1.5em; margin-left: auto; margin-right: auto; justify-content: center; justify-items: center;">
+            <div class="is-size-5 publication-authors hero-stagger hero-stagger--3" style="display: grid; grid-template-columns: repeat(3, auto); gap: 0.25em 1.5em; margin-left: auto; margin-right: auto; justify-content: center; justify-items: center;">
               <span class="author-block"><a href="https://yutang-lin.github.io/" class="author-name" target="_blank" rel="noopener">Yutang Lin</a><sup>*, 1, 2, 3, 5, 6, 7</sup></span>
               <span class="author-block"><a href="https://jiemingcui.github.io/" class="author-name" target="_blank" rel="noopener">Jieming Cui</a><sup>*, 1, 2, 3, 5, 6, 7</sup></span>
               <span class="author-block"><a href="https://yixxuan-li.github.io/" class="author-name" target="_blank" rel="noopener">Yixuan Li</a><sup>4, 2, 5</sup></span>
@@ -240,10 +251,10 @@
               <span class="author-block"><a href="https://yzhu.io/" class="author-name" target="_blank" rel="noopener">Yixin Zhu</a><sup>†, 3, 1, 5, 6, 7</sup></span>
               <span class="author-block"><a href="https://siyuanhuang.com/" class="author-name" target="_blank" rel="noopener">Siyuan Huang</a><sup>†, 2, 5</sup></span>
             </div>
-            <div class="is-size-5 publication-authors hero-stagger hero-stagger--3">
+            <div class="is-size-5 publication-authors hero-stagger hero-stagger--4">
               <span class="eql-cntrb"><small><sup>*</sup>Equal contribution &nbsp; <sup>†</sup>Corresponding author</small></span>
             </div>
-            <div class="affiliations-wrap hero-stagger hero-stagger--4" style="margin-top: 0.5em; text-align: center;">
+            <div class="affiliations-wrap hero-stagger hero-stagger--5" style="margin-top: 0.5em; text-align: center;">
               <button type="button" class="affiliations-toggle" onclick="this.parentElement.classList.toggle('is-open')">
                 Affiliations <span class="affiliations-arrow">&#x25BC;</span>
               </button>
@@ -260,7 +271,7 @@
             <!-- <div class="is-size-5 publication-authors" style="margin-top: 0.5em;">
               <a href="https://lessmimic.github.io" target="_blank" rel="noopener noreferrer">Project Website: https://lessmimic.github.io</a>
             </div> -->
-            <div class="column has-text-centered hero-stagger hero-stagger--5">
+            <div class="column has-text-centered hero-stagger hero-stagger--6">
               <div class="publication-links">
                 <span class="link-block">
                   <a href="static/pdfs/lessmimic.pdf" target="_blank" rel="noopener noreferrer" class="external-link button is-normal is-rounded is-dark">
@@ -818,10 +829,10 @@
           <span class="copy-text">Copy</span>
         </button>
       </div>
-      <pre id="bibtex-code"><code>@article{lin2026lessmimic,
+      <pre id="bibtex-code"><code>@inproceedings{lin2026lessmimic,
   title={LessMimic: Long-Horizon Humanoid Interaction with Unified Distance Field Representations},
-  author={Yutang Lin and Jieming Cui and Yixuan Li and Baoxiong Jia and Yixin Zhu and Siyuan Huang},
-  journal={arXiv preprint arXiv:2602.21723},
+  author={Lin, Yutang and Cui, Jieming and Li, Yixuan and Jia, Baoxiong and Zhu, Yixin and Huang, Siyuan},
+  booktitle={Advances in Neural Information Processing Systems},
   year={2026}
 }</code></pre>
     </div>

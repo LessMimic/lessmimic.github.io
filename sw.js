@@ -1,5 +1,5 @@
 // Service Worker — cache-first for static assets, network-first for HTML
-const CACHE_NAME = 'lessmimic-v1';
+const CACHE_NAME = 'lessmimic-v2';
 
 // Assets to pre-cache on install (critical CSS/JS)
 const PRECACHE = [
