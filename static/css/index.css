@@ -550,22 +550,27 @@ body {
 }
 
 .author-grid {
-  display: grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-  gap: 0.5em 1em;
-  max-width: 58rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5em;
   margin-left: auto;
   margin-right: auto;
-  justify-items: center;
+  text-align: center;
+}
+
+.author-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: baseline;
+  gap: 0.25em 1.5em;
+  width: 100%;
+  text-align: center;
 }
 
 .author-grid .author-block {
-  grid-column: span 3;
   margin-right: 0;
-}
-
-.author-grid .author-block:nth-child(-n + 3) {
-  grid-column: span 4;
 }
 
 .publication-banner img {

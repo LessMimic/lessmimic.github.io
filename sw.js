@@ -1,10 +1,10 @@
 // Service Worker — cache-first for static assets, network-first for HTML
-const CACHE_NAME = 'lessmimic-v2';
+const CACHE_NAME = 'lessmimic-v3';
 
 // Assets to pre-cache on install (critical CSS/JS)
 const PRECACHE = [
   'static/css/bulma.min.css',
-  'static/css/index.css',
+  'static/css/index.css?v=authors-centered-3',
   'static/js/index.js',
   'static/images/lessmimic-icon.png',
 ];
